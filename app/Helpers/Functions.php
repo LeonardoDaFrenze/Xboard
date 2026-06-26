@@ -3,7 +3,7 @@ use App\Support\Setting;
 
 if (!function_exists('admin_setting')) {
     /**
-     * 获取或保存配置参数.
+     * Get or save a configuration parameter.
      *
      * @param  string|array  $key
      * @param  mixed  $default
@@ -39,10 +39,10 @@ if (!function_exists('subscribe_template')) {
 
 if (!function_exists('admin_settings_batch')) {
     /**
-     * 批量获取配置参数，性能优化版本
+     * Batch-get multiple configuration parameters (optimized).
      *
-     * @param array $keys 配置键名数组
-     * @return array 返回键值对数组
+     * @param array $keys Array of setting keys
+     * @return array Key-value pairs
      */
     function admin_settings_batch(array $keys): array
     {
@@ -52,7 +52,7 @@ if (!function_exists('admin_settings_batch')) {
 
 if (!function_exists('source_base_url')) {
     /**
-     * 获取来源基础URL，优先Referer，其次Host
+     * Get the base URL from Referer header, falling back to the Host header.
      * @param string $path
      * @return string
      */

@@ -12,7 +12,7 @@ class Plugin extends AbstractPlugin implements PaymentInterface
         $this->filter('available_payment_methods', function ($methods) {
             if ($this->getConfig('enabled', true)) {
                 $methods['EPay'] = [
-                    'name' => $this->getConfig('display_name', '易支付'),
+                    'name' => $this->getConfig('display_name', 'EPay'),
                     'icon' => $this->getConfig('icon', '💳'),
                     'plugin_code' => $this->getPluginCode(),
                     'type' => 'plugin'
@@ -26,27 +26,27 @@ class Plugin extends AbstractPlugin implements PaymentInterface
     {
         return [
             'url' => [
-                'label' => '支付网关地址',
+                'label' => 'Gateway URL',
                 'type' => 'string',
                 'required' => true,
-                'description' => '请填写完整的支付网关地址，包括协议（http或https）'
+                'description' => 'Full payment gateway URL including protocol (http or https)'
             ],
             'pid' => [
-                'label' => '商户ID',
+                'label' => 'Merchant ID',
                 'type' => 'string',
-                'description' => '请填写商户ID',
+                'description' => 'Merchant identifier',
                 'required' => true
             ],
             'key' => [
-                'label' => '通信密钥',
+                'label' => 'Secret Key',
                 'type' => 'string',
                 'required' => true,
-                'description' => '请填写通信密钥'
+                'description' => 'Communication secret key'
             ],
             'type' => [
-                'label' => '支付类型',
+                'label' => 'Payment Type',
                 'type' => 'string',
-                'description' => '支付类型，如: alipay, wxpay, qqpay 等，可自定义'
+                'description' => 'Payment type, e.g. alipay, wxpay, qqpay — leave blank for default'
             ],
         ];
     }

@@ -31,7 +31,7 @@ class XboardInstall extends Command
      *
      * @var string
      */
-    protected $description = 'xboard 初始化安装';
+    protected $description = 'XXXBoard initial installation wizard';
 
     /**
      * Create a new command instance.
@@ -65,43 +65,41 @@ class XboardInstall extends Command
                 || (getenv('INSTALLED', false) && $isDocker)
             ) {
                 $securePath = admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key'))));
-                $this->info("访问 http(s)://你的站点/{$securePath} 进入管理面板，你可以在用户中心修改你的密码。");
-                $this->warn("如需重新安装请清空目录下 .env 文件的内容（Docker安装方式不可以删除此文件）");
-                $this->warn("快捷清空.env命令：");
+                $this->info("Visit http(s)://your-site/{$securePath} to access the admin panel. You can change your password in the user center.");
+                $this->warn("To reinstall, clear the contents of the .env file (Docker users: do not delete the file).");
+                $this->warn("Quick clear command:");
                 note('rm .env && touch .env');
                 return;
             }
             if (is_dir(base_path() . '/.env')) {
-                $this->error('😔：安装失败，Docker环境下安装请保留空的 .env 文件');
+                $this->error('Installation failed — in Docker environments, keep an empty .env file instead of a directory.');
                 return;
             }
-            // 选择数据库类型
+            // Select database type
             $dbType = $enableSqlite ? 'sqlite' : select(
-                label: '请选择数据库类型',
+                label: 'Select database type',
                 options: [
-                    'sqlite' => 'SQLite (无需额外安装)',
+                    'sqlite' => 'SQLite (no extra setup required)',
                     'mysql' => 'MySQL',
                     'postgresql' => 'PostgreSQL'
                 ],
                 default: 'sqlite'
             );
 
-            // 使用 match 表达式配置数据库
             $envConfig = match ($dbType) {
                 'sqlite' => $this->configureSqlite(),
                 'mysql' => $this->configureMysql(),
                 'postgresql' => $this->configurePostgresql(),
-                default => throw new \InvalidArgumentException("不支持的数据库类型: {$dbType}")
+                default => throw new \InvalidArgumentException("Unsupported database type: {$dbType}")
             };
 
             if (is_null($envConfig)) {
-                return; // 用户选择退出安装
+                return;
             }
             $envConfig['APP_KEY'] = 'base64:' . base64_encode(Encrypter::generateKey('AES-256-CBC'));
             $isReidsValid = false;
             while (!$isReidsValid) {
-                // 判断是否为Docker环境
-                $useBuiltinRedis = $isDocker && ($enableRedis || confirm(label: '是否启用Docker内置的Redis', default: true, yes: '启用', no: '不启用'));
+                $useBuiltinRedis = $isDocker && ($enableRedis || confirm(label: 'Use the built-in Docker Redis?', default: true, yes: 'Yes', no: 'No'));
                 if ($useBuiltinRedis) {
                     $envConfig['REDIS_HOST'] = '/data/redis.sock';
                     $envConfig['REDIS_PORT'] = 0;
@@ -109,9 +107,9 @@ class XboardInstall extends Command
                     $isReidsValid = true;
                     break;
                 }
-                $envConfig['REDIS_HOST'] = text(label: '请输入Redis地址', default: '127.0.0.1', required: true);
-                $envConfig['REDIS_PORT'] = text(label: '请输入Redis端口', default: '6379', required: true);
-                $envConfig['REDIS_PASSWORD'] = text(label: '请输入redis密码(默认: null)', default: '');
+                $envConfig['REDIS_HOST'] = text(label: 'Redis host', default: '127.0.0.1', required: true);
+                $envConfig['REDIS_PORT'] = text(label: 'Redis port', default: '6379', required: true);
+                $envConfig['REDIS_PASSWORD'] = text(label: 'Redis password (leave blank for none)', default: '');
                 $redisConfig = [
                     'client' => 'phpredis',
                     'default' => [
@@ -126,24 +124,23 @@ class XboardInstall extends Command
                     $redis->ping();
                     $isReidsValid = true;
                 } catch (\Exception $e) {
-                    // 连接失败，输出错误消息
-                    $this->error("redis连接失败：" . $e->getMessage());
-                    $this->info("请重新输入REDIS配置");
+                    $this->error("Redis connection failed: " . $e->getMessage());
+                    $this->info("Please re-enter Redis configuration.");
                     $enableRedis = false;
                     sleep(1);
                 }
             }
 
             if (!copy(base_path() . '/.env.example', base_path() . '/.env')) {
-                abort(500, '复制环境文件失败，请检查目录权限');
+                abort(500, 'Failed to copy environment file — check directory permissions.');
             }
             ;
             $email = !empty($adminAccount) ? $adminAccount : text(
-                label: '请输入管理员账号',
+                label: 'Admin email address',
                 default: 'admin@demo.com',
                 required: true,
                 validate: fn(string $email): ?string => match (true) {
-                    !filter_var($email, FILTER_VALIDATE_EMAIL) => '请输入有效的邮箱地址.',
+                    !filter_var($email, FILTER_VALIDATE_EMAIL) => 'Please enter a valid email address.',
                     default => null,
                 }
             );
@@ -166,24 +163,24 @@ class XboardInstall extends Command
 
             $this->call('config:cache');
             Artisan::call('cache:clear');
-            $this->info('正在导入数据库请稍等...');
+            $this->info('Importing database, please wait...');
             Artisan::call("migrate", ['--force' => true]);
             $this->info(Artisan::output());
-            $this->info('数据库导入完成');
-            $this->info('开始注册管理员账号');
+            $this->info('Database import complete.');
+            $this->info('Registering admin account...');
             if (!self::registerAdmin($email, $password)) {
-                abort(500, '管理员账号注册失败，请重试');
+                abort(500, 'Admin account registration failed — please try again.');
             }
-            $this->info('正在安装默认插件...');
+            $this->info('Installing default plugins...');
             PluginManager::installDefaultPlugins();
-            $this->info('默认插件安装完成');
+            $this->info('Default plugins installed.');
 
-            $this->info('🎉：一切就绪');
-            $this->info("管理员邮箱：{$email}");
-            $this->info("管理员密码：{$password}");
+            $this->info('Installation complete.');
+            $this->info("Admin email: {$email}");
+            $this->info("Admin password: {$password}");
 
             $defaultSecurePath = hash('crc32b', config('app.key'));
-            $this->info("访问 http(s)://你的站点/{$defaultSecurePath} 进入管理面板，你可以在用户中心修改你的密码。");
+            $this->info("Visit http(s)://your-site/{$defaultSecurePath} to access the admin panel. You can change your password in the user center.");
             $envConfig['INSTALLED'] = true;
             $this->saveToEnv($envConfig);
             foreach (array_keys($installDriverOverrides) as $key) {
@@ -201,7 +198,7 @@ class XboardInstall extends Command
         $user = new User();
         $user->email = $email;
         if (strlen($password) < 8) {
-            abort(500, '管理员密码长度最小为8位字符');
+            abort(500, 'Admin password must be at least 8 characters.');
         }
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->uuid = Helper::guid(true);
@@ -244,7 +241,7 @@ class XboardInstall extends Command
     }
 
     /**
-     * 配置 SQLite 数据库
+     * Configure SQLite database
      *
      * @return array|null
      */
@@ -252,9 +249,8 @@ class XboardInstall extends Command
     {
         $sqliteFile = '.docker/.data/database.sqlite';
         if (!file_exists(base_path($sqliteFile))) {
-            // 创建空文件
             if (!touch(base_path($sqliteFile))) {
-                $this->info("sqlite创建成功: $sqliteFile");
+                $this->info("SQLite file created: $sqliteFile");
             }
         }
 
@@ -273,16 +269,16 @@ class XboardInstall extends Command
             DB::connection('sqlite')->getPdo();
 
             if (!blank(DB::connection('sqlite')->getPdo()->query("SELECT name FROM sqlite_master WHERE type='table'")->fetchAll(\PDO::FETCH_COLUMN))) {
-                if (confirm(label: '检测到数据库中已经存在数据，是否要清空数据库以便安装新的数据？', default: false, yes: '清空', no: '退出安装')) {
-                    $this->info('正在清空数据库请稍等');
+                if (confirm(label: 'Existing data detected in the database. Clear it to proceed with installation?', default: false, yes: 'Clear', no: 'Cancel')) {
+                    $this->info('Clearing database...');
                     $this->call('db:wipe', ['--force' => true]);
-                    $this->info('数据库清空完成');
+                    $this->info('Database cleared.');
                 } else {
                     return null;
                 }
             }
         } catch (\Exception $e) {
-            $this->error("SQLite数据库连接失败：" . $e->getMessage());
+            $this->error("SQLite connection failed: " . $e->getMessage());
             return null;
         }
 
@@ -290,7 +286,7 @@ class XboardInstall extends Command
     }
 
     /**
-     * 配置 MySQL 数据库
+     * Configure MySQL database
      *
      * @return array
      */
@@ -299,11 +295,11 @@ class XboardInstall extends Command
         while (true) {
             $envConfig = [
                 'DB_CONNECTION' => 'mysql',
-                'DB_HOST' => text(label: "请输入MySQL数据库地址", default: '127.0.0.1', required: true),
-                'DB_PORT' => text(label: '请输入MySQL数据库端口', default: '3306', required: true),
-                'DB_DATABASE' => text(label: '请输入MySQL数据库名', default: 'xboard', required: true),
-                'DB_USERNAME' => text(label: '请输入MySQL数据库用户名', default: 'root', required: true),
-                'DB_PASSWORD' => text(label: '请输入MySQL数据库密码', required: false),
+                'DB_HOST' => text(label: "MySQL host", default: '127.0.0.1', required: true),
+                'DB_PORT' => text(label: 'MySQL port', default: '3306', required: true),
+                'DB_DATABASE' => text(label: 'MySQL database name', default: 'xboard', required: true),
+                'DB_USERNAME' => text(label: 'MySQL username', default: 'root', required: true),
+                'DB_PASSWORD' => text(label: 'MySQL password', required: false),
             ];
 
             try {
@@ -317,26 +313,26 @@ class XboardInstall extends Command
                 DB::connection('mysql')->getPdo();
 
                 if (!blank(DB::connection('mysql')->select('SHOW TABLES'))) {
-                    if (confirm(label: '检测到数据库中已经存在数据，是否要清空数据库以便安装新的数据？', default: false, yes: '清空', no: '不清空')) {
-                        $this->info('正在清空数据库请稍等');
+                    if (confirm(label: 'Existing data detected in the database. Clear it to proceed with installation?', default: false, yes: 'Clear', no: 'Cancel')) {
+                        $this->info('Clearing database...');
                         $this->call('db:wipe', ['--force' => true]);
-                        $this->info('数据库清空完成');
+                        $this->info('Database cleared.');
                         return $envConfig;
                     } else {
-                        continue; // 重新输入配置
+                        continue;
                     }
                 }
 
                 return $envConfig;
             } catch (\Exception $e) {
-                $this->error("MySQL数据库连接失败：" . $e->getMessage());
-                $this->info("请重新输入MySQL数据库配置");
+                $this->error("MySQL connection failed: " . $e->getMessage());
+                $this->info("Please re-enter MySQL configuration.");
             }
         }
     }
 
     /**
-     * 配置 PostgreSQL 数据库
+     * Configure PostgreSQL database
      *
      * @return array
      */
@@ -345,11 +341,11 @@ class XboardInstall extends Command
         while (true) {
             $envConfig = [
                 'DB_CONNECTION' => 'pgsql',
-                'DB_HOST' => text(label: "请输入PostgreSQL数据库地址", default: '127.0.0.1', required: true),
-                'DB_PORT' => text(label: '请输入PostgreSQL数据库端口', default: '5432', required: true),
-                'DB_DATABASE' => text(label: '请输入PostgreSQL数据库名', default: 'xboard', required: true),
-                'DB_USERNAME' => text(label: '请输入PostgreSQL数据库用户名', default: 'postgres', required: true),
-                'DB_PASSWORD' => text(label: '请输入PostgreSQL数据库密码', required: false),
+                'DB_HOST' => text(label: "PostgreSQL host", default: '127.0.0.1', required: true),
+                'DB_PORT' => text(label: 'PostgreSQL port', default: '5432', required: true),
+                'DB_DATABASE' => text(label: 'PostgreSQL database name', default: 'xboard', required: true),
+                'DB_USERNAME' => text(label: 'PostgreSQL username', default: 'postgres', required: true),
+                'DB_PASSWORD' => text(label: 'PostgreSQL password', required: false),
             ];
 
             try {
@@ -362,23 +358,23 @@ class XboardInstall extends Command
                 DB::purge('pgsql');
                 DB::connection('pgsql')->getPdo();
 
-                // 检查PostgreSQL数据库是否有表
+                // Check if database already has tables
                 $tables = DB::connection('pgsql')->select("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
                 if (!blank($tables)) {
-                    if (confirm(label: '检测到数据库中已经存在数据，是否要清空数据库以便安装新的数据？', default: false, yes: '清空', no: '不清空')) {
-                        $this->info('正在清空数据库请稍等');
+                    if (confirm(label: 'Existing data detected in the database. Clear it to proceed with installation?', default: false, yes: 'Clear', no: 'Cancel')) {
+                        $this->info('Clearing database...');
                         $this->call('db:wipe', ['--force' => true]);
-                        $this->info('数据库清空完成');
+                        $this->info('Database cleared.');
                         return $envConfig;
                     } else {
-                        continue; // 重新输入配置
+                        continue;
                     }
                 }
 
                 return $envConfig;
             } catch (\Exception $e) {
-                $this->error("PostgreSQL数据库连接失败：" . $e->getMessage());
-                $this->info("请重新输入PostgreSQL数据库配置");
+                $this->error("PostgreSQL connection failed: " . $e->getMessage());
+                $this->info("Please re-enter PostgreSQL configuration.");
             }
         }
     }

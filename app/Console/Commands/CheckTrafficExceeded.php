@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Redis;
 class CheckTrafficExceeded extends Command
 {
     protected $signature = 'check:traffic-exceeded';
-    protected $description = '检查流量超标用户并通知节点';
+    protected $description = 'Check for users who have exceeded traffic limits and notify nodes';
 
     public function handle()
     {

@@ -28,27 +28,27 @@ class Plugin extends AbstractPlugin implements PaymentInterface
     {
         return [
             'mgate_url' => [
-                'label' => 'API地址',
+                'label' => 'API Endpoint',
                 'type' => 'string',
                 'required' => true,
-                'description' => 'MGate支付网关API地址'
+                'description' => 'MGate payment gateway API URL'
             ],
             'mgate_app_id' => [
-                'label' => 'APP ID',
+                'label' => 'App ID',
                 'type' => 'string',
                 'required' => true,
-                'description' => 'MGate应用标识符'
+                'description' => 'MGate application identifier'
             ],
             'mgate_app_secret' => [
                 'label' => 'App Secret',
                 'type' => 'string',
                 'required' => true,
-                'description' => 'MGate应用密钥'
+                'description' => 'MGate application secret key'
             ],
             'mgate_source_currency' => [
-                'label' => '源货币',
+                'label' => 'Source Currency',
                 'type' => 'string',
-                'description' => '默认CNY，源货币类型'
+                'description' => 'Source currency code. Default: USD'
             ]
         ];
     }
@@ -78,7 +78,7 @@ class Plugin extends AbstractPlugin implements PaymentInterface
         $result = $curl->response;
 
         if (!$result) {
-            throw new ApiException('网络异常');
+            throw new ApiException('Network error communicating with MGate');
         }
 
         if ($curl->error) {
@@ -89,13 +89,13 @@ class Plugin extends AbstractPlugin implements PaymentInterface
             if (isset($result->message)) {
                 throw new ApiException($result->message);
             }
-            throw new ApiException('未知错误');
+            throw new ApiException('Unknown error from MGate');
         }
 
         $curl->close();
 
         if (!isset($result->data->trade_no)) {
-            throw new ApiException('接口请求失败');
+            throw new ApiException('MGate API request failed');
         }
 
         return [

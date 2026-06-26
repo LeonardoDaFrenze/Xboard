@@ -27,28 +27,28 @@ class Plugin extends AbstractPlugin implements PaymentInterface
     {
         return [
             'btcpay_url' => [
-                'label' => 'API接口所在网址',
+                'label' => 'BTCPay Server URL',
                 'type' => 'string',
                 'required' => true,
-                'description' => '包含最后的斜杠，例如：https://your-btcpay.com/'
+                'description' => 'Include trailing slash, e.g. https://your-btcpay.com/'
             ],
             'btcpay_storeId' => [
                 'label' => 'Store ID',
                 'type' => 'string',
                 'required' => true,
-                'description' => 'BTCPay商店标识符'
+                'description' => 'BTCPay store identifier'
             ],
             'btcpay_api_key' => [
-                'label' => 'API KEY',
+                'label' => 'API Key',
                 'type' => 'string',
                 'required' => true,
-                'description' => '个人设置中的API KEY(非商店设置中的)'
+                'description' => 'Personal API key (from Account Settings, not Store Settings)'
             ],
             'btcpay_webhook_key' => [
-                'label' => 'WEBHOOK KEY',
+                'label' => 'Webhook Secret',
                 'type' => 'string',
                 'required' => true,
-                'description' => 'Webhook通知密钥'
+                'description' => 'Webhook signing secret for notification verification'
             ],
         ];
     }
@@ -58,7 +58,7 @@ class Plugin extends AbstractPlugin implements PaymentInterface
         $params = [
             'jsonResponse' => true,
             'amount' => sprintf('%.2f', $order['total_amount'] / 100),
-            'currency' => 'CNY',
+            'currency' => 'USD',
             'metadata' => [
                 'orderId' => $order['trade_no']
             ]

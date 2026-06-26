@@ -7,9 +7,8 @@ use Exception;
 class BusinessException extends Exception
 {
     /**
-     * 业务异常构造函数
-     * @param array $codeResponse 状态码
-     * @param string $info 自定义返回信息，不为空时会替换掉codeResponse 里面的message文字信息
+     * @param array $codeResponse [code, message] tuple
+     * @param string $info Custom message — overrides the codeResponse message when non-empty
      */
     public function __construct(array $codeResponse, $info = '')
     {

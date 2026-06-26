@@ -30,19 +30,19 @@ class Plugin extends AbstractPlugin implements PaymentInterface
                 'label' => 'Merchant ID',
                 'type' => 'string',
                 'required' => true,
-                'description' => '商户 ID，填写您在 Account Settings 中得到的 ID'
+                'description' => 'Your Merchant ID from CoinPayments Account Settings'
             ],
             'coinpayments_ipn_secret' => [
                 'label' => 'IPN Secret',
                 'type' => 'string',
                 'required' => true,
-                'description' => '通知密钥，填写您在 Merchant Settings 中自行设置的值'
+                'description' => 'IPN secret set in your CoinPayments Merchant Settings'
             ],
             'coinpayments_currency' => [
-                'label' => '货币代码',
+                'label' => 'Currency Code',
                 'type' => 'string',
                 'required' => true,
-                'description' => '填写您的货币代码（大写），建议与 Merchant Settings 中的值相同'
+                'description' => 'Uppercase currency code (e.g. USD) — should match your Merchant Settings'
             ]
         ];
     }

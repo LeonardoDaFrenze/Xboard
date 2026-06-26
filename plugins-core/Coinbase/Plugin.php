@@ -27,22 +27,22 @@ class Plugin extends AbstractPlugin implements PaymentInterface
     {
         return [
             'coinbase_url' => [
-                'label' => '接口地址',
+                'label' => 'API Endpoint',
                 'type' => 'string',
                 'required' => true,
-                'description' => 'Coinbase Commerce API地址'
+                'description' => 'Coinbase Commerce API endpoint URL'
             ],
             'coinbase_api_key' => [
-                'label' => 'API KEY',
+                'label' => 'API Key',
                 'type' => 'string',
                 'required' => true,
-                'description' => 'Coinbase Commerce API密钥'
+                'description' => 'Coinbase Commerce API key'
             ],
             'coinbase_webhook_key' => [
-                'label' => 'WEBHOOK KEY',
+                'label' => 'Webhook Secret',
                 'type' => 'string',
                 'required' => true,
-                'description' => 'Webhook签名验证密钥'
+                'description' => 'Webhook signing secret for signature verification'
             ],
         ];
     }
@@ -50,12 +50,12 @@ class Plugin extends AbstractPlugin implements PaymentInterface
     public function pay($order): array
     {
         $params = [
-            'name' => '订阅套餐',
-            'description' => '订单号 ' . $order['trade_no'],
+            'name' => 'Subscription Plan',
+            'description' => 'Order: ' . $order['trade_no'],
             'pricing_type' => 'fixed_price',
             'local_price' => [
                 'amount' => sprintf('%.2f', $order['total_amount'] / 100),
-                'currency' => 'CNY'
+                'currency' => 'USD'
             ],
             'metadata' => [
                 "outTradeNo" => $order['trade_no'],

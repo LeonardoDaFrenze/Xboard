@@ -1,0 +1,8 @@
+{
+    "name": "Stripe",
+    "code": "stripe",
+    "type": "payment",
+    "version": "1.0.0",
+    "description": "Stripe payment plugin — Checkout Sessions with webhook verification",
+    "author": "XXXBoard Team"
+}
