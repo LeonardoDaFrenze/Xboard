@@ -33,3 +33,5 @@ compose.host.yaml
 compose.split.yaml
 .scribetools/.venv/
 tools/__pycache__/
+tools/graph.json
+tools/.venv/
