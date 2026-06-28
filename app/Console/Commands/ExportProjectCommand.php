@@ -250,7 +250,13 @@ class ExportProjectCommand extends Command
                 if ($id === T_COMMENT || $id === T_DOC_COMMENT) {
                     continue;
                 }
-                
+
+                if ($id === T_OPEN_TAG) {
+                    $minified .= '<?php ';
+                    $lastChar = ' ';
+                    continue;
+                }
+
                 if ($id === T_WHITESPACE) {
                     // Ultra-crush: Treat all newlines and spaces as a single horizontal space
                     if ($lastChar !== ' ') {

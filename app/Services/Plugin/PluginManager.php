@@ -708,9 +708,8 @@ class PluginManager
     /**
      * install default plugins
      */
-    public static function installDefaultPlugins(): void
+    public function installDefaultPlugins(): void
     {
-        $pluginManager = app(self::class);
         $coreDir = base_path('plugins-core');
 
         if (!File::isDirectory($coreDir)) {
@@ -728,8 +727,8 @@ class PluginManager
                 continue;
             }
             if (!Plugin::where('code', $code)->exists()) {
-                $pluginManager->install($code);
-                $pluginManager->enable($code);
+                $this->install($code);
+                $this->enable($code);
                 Log::info("Installed and enabled core plugin: {$code}");
             }
         }

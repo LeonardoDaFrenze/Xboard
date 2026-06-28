@@ -2,64 +2,96 @@
 
 namespace Tests\Feature\Commands;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Plan;
 use App\Models\Server;
+use App\Models\User;
+use App\Services\NodeSyncService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Cache;
+use Mockery;
+use Tests\TestCase;
 
 class CheckTrafficExceededCommandTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_notifies_users_when_traffic_threshold_exceeded()
+    protected function tearDown(): void
     {
-        $plan = Plan::factory()->create();
-        
-        $user = User::factory()->create([
-            'plan_id' => $plan->id,
+        try {
+            Mockery::close();
+        } finally {
+            parent::tearDown();
+        }
+    }
+
+    public function test_check_traffic_exceeded_notifies_nodes_for_exceeded_users()
+    {
+        // 1. Setup Data
+        $exceededUser = User::factory()->create([
+            'u' => 100,
+            'd' => 100,
+            'transfer_enable' => 150,
             'group_id' => 1,
-            'transfer_enable' => 100 * 1024 * 1024 * 1024, // 100 GB
-            'u' => 50 * 1024 * 1024 * 1024, // 50 GB
-            'd' => 55 * 1024 * 1024 * 1024, // 55 GB (Total 105 GB, which is >= transfer_enable)
-            'remind_traffic' => 1,
-            'banned' => 0,
+            'banned' => 0
+        ]);
+
+        $compliantUser = User::factory()->create([
+            'u' => 10,
+            'd' => 10,
+            'transfer_enable' => 150,
+            'group_id' => 1,
+            'banned' => 0
         ]);
 
         $server = Server::factory()->create([
-            'group_ids' => ['1'],
+            'group_ids' => ['1']
         ]);
 
-        // Mock NodeSyncService isNodeOnline check
-        Cache::put("node_ws_alive:{$server->id}", true);
+        // Mark the node as online via Cache
+        \Illuminate\Support\Facades\Cache::put("node_ws_alive:{$server->id}", true);
 
-        // Mock Redis calls inside the command CheckTrafficExceeded
+        // 2. Mock Redis
         Redis::shouldReceive('scard')
-            ->once()
             ->with('traffic:pending_check')
-            ->andReturn(1);
+            ->andReturn(2);
 
         Redis::shouldReceive('spop')
-            ->once()
-            ->with('traffic:pending_check', 1)
-            ->andReturn([$user->id]);
+            ->with('traffic:pending_check', 2)
+            ->andReturn([$exceededUser->id, $compliantUser->id]);
 
         Redis::shouldReceive('publish')
             ->once()
-            ->with('node:push', \Mockery::on(function ($argument) use ($user, $server) {
+            ->with('node:push', Mockery::on(function ($argument) use ($server, $exceededUser) {
                 $decoded = json_decode($argument, true);
-                return $decoded['node_id'] === $server->id &&
-                       $decoded['event'] === 'sync.user.delta' &&
-                       $decoded['data']['action'] === 'remove' &&
-                       $decoded['data']['users'][0]['id'] === $user->id;
-            }))
-            ->andReturn(1);
+                return isset($decoded['node_id']) && $decoded['node_id'] === $server->id &&
+                       isset($decoded['event']) && $decoded['event'] === 'sync.user.delta' &&
+                       isset($decoded['data']['action']) && $decoded['data']['action'] === 'remove' &&
+                       isset($decoded['data']['users']) && $decoded['data']['users'] === [['id' => $exceededUser->id]];
+            }));
 
-        $exitCode = Artisan::call('check:traffic-exceeded');
+        // 4. Run command
+        $this->artisan('check:traffic-exceeded')
+            ->expectsOutputToContain('Checked 2 users, notified 1 nodes for 1 exceeded users.')
+            ->assertExitCode(0);
+    }
 
-        $this->assertEquals(0, $exitCode);
+    public function test_check_traffic_exceeded_skips_offline_nodes()
+    {
+        $exceededUser = User::factory()->create([
+            'u' => 100,
+            'd' => 100,
+            'transfer_enable' => 50,
+            'group_id' => 1,
+            'banned' => 0
+        ]);
+
+        $server = Server::factory()->create(['group_ids' => ['1']]);
+
+        // Node is offline since we don't set cache
+
+        Redis::shouldReceive('scard')->andReturn(1);
+        Redis::shouldReceive('spop')->andReturn([$exceededUser->id]);
+
+        $this->artisan('check:traffic-exceeded')
+            ->assertExitCode(0);
     }
 }

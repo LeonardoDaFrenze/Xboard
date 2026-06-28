@@ -14,7 +14,7 @@ class HookList extends Command
   {
     $paths = [base_path('app'), base_path('plugins-core'), base_path('plugins')];
     $hooks = collect();
-    $pattern = '/HookManager::(call|filter|register|registerFilter)\([\'\"]([a-zA-Z0-9_.-]+)[\'\"]/';
+    $pattern = '/HookManager::(call|registerFilter|filter|register)\([\'\"]([a-zA-Z0-9_.-]+)[\'\"]/';
 
     foreach ($paths as $path) {
       $files = collect(

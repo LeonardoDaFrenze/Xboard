@@ -50,6 +50,10 @@ class XboardInstall extends Command
      */
     public function handle()
     {
+        if (app()->runningUnitTests()) {
+            $reflector = new \ReflectionClass(\Laravel\Prompts\Prompt::class);
+            $reflector->setStaticPropertyValue('shouldFallback', false);
+        }
         try {
             $isDocker = file_exists('/.dockerenv');
             $enableSqlite = getenv('ENABLE_SQLITE', false);
@@ -75,7 +79,6 @@ class XboardInstall extends Command
                 $this->error('Installation failed — in Docker environments, keep an empty .env file instead of a directory.');
                 return;
             }
-            // Select database type
             $dbType = $enableSqlite ? 'sqlite' : select(
                 label: 'Select database type',
                 options: [
@@ -85,6 +88,7 @@ class XboardInstall extends Command
                 ],
                 default: 'sqlite'
             );
+
 
             $envConfig = match ($dbType) {
                 'sqlite' => $this->configureSqlite(),
@@ -172,7 +176,7 @@ class XboardInstall extends Command
                 abort(500, 'Admin account registration failed — please try again.');
             }
             $this->info('Installing default plugins...');
-            PluginManager::installDefaultPlugins();
+            app(PluginManager::class)->installDefaultPlugins();
             $this->info('Default plugins installed.');
 
             $this->info('Installation complete.');
@@ -288,9 +292,9 @@ class XboardInstall extends Command
     /**
      * Configure MySQL database
      *
-     * @return array
+     * @return array|null
      */
-    private function configureMysql(): array
+    private function configureMysql(): ?array
     {
         while (true) {
             $envConfig = [
@@ -326,6 +330,9 @@ class XboardInstall extends Command
                 return $envConfig;
             } catch (\Exception $e) {
                 $this->error("MySQL connection failed: " . $e->getMessage());
+                if (app()->runningUnitTests()) {
+                    return null;
+                }
                 $this->info("Please re-enter MySQL configuration.");
             }
         }
@@ -334,9 +341,9 @@ class XboardInstall extends Command
     /**
      * Configure PostgreSQL database
      *
-     * @return array
+     * @return array|null
      */
-    private function configurePostgresql(): array
+    private function configurePostgresql(): ?array
     {
         while (true) {
             $envConfig = [
@@ -374,6 +381,9 @@ class XboardInstall extends Command
                 return $envConfig;
             } catch (\Exception $e) {
                 $this->error("PostgreSQL connection failed: " . $e->getMessage());
+                if (app()->runningUnitTests()) {
+                    return null;
+                }
                 $this->info("Please re-enter PostgreSQL configuration.");
             }
         }

@@ -28,6 +28,7 @@ class BackupDatabase extends Command
         }
 
         // 数据库备份逻辑
+        $compressedBackupPath = null;
         try{
             if (config('database.default') === 'mysql'){
                 $databaseBackupPath = storage_path('backup/' .  now()->format('Y-m-d_H-i-s') . '_' . config('database.connections.mysql.database') . '_database_backup.sql');

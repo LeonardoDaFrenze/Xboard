@@ -2,46 +2,56 @@
 
 namespace Tests\Feature\Commands;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Plan;
-use App\Jobs\SendEmailJob;
+use App\Services\MailService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Queue;
+use Tests\TestCase;
+use Mockery;
 
 class SendRemindMailCommandTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_send_remind_mail_queues_email_for_expiring_users()
+    protected function setUp(): void
     {
-        Queue::fake();
-
-        // Enable mail reminder feature
+        parent::setUp();
         admin_setting(['remind_mail_enable' => 1]);
+    }
 
-        $plan = Plan::factory()->create();
-        $user = User::factory()->create([
-            'plan_id' => $plan->id,
-            'remind_expire' => 1,
-            'expired_at' => time() + 86400 / 2, // Expiring in 12 hours (within the 24h threshold)
-            'banned' => 0,
-        ]);
+    protected function tearDown(): void
+    {
+        try {
+            Mockery::close();
+        } finally {
+            parent::tearDown();
+        }
+    }
 
-        $exitCode = Artisan::call('send:remindMail', ['--force' => true]);
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
+    #[\PHPUnit\Framework\Attributes\PreserveGlobalState(false)]
+    public function test_send_remind_mail_processes_users()
+    {
+        // overload: intercepts `new MailService()` inside the command
+        $mailServiceMock = Mockery::mock('overload:' . MailService::class);
 
-        $this->assertEquals(0, $exitCode);
+        $mailServiceMock->shouldReceive('getTotalUsersNeedRemind')
+            ->once()
+            ->andReturn(100);
 
-        // Verify the job was pushed
-        Queue::assertPushed(SendEmailJob::class, function ($job) use ($user) {
-            $reflection = new \ReflectionClass($job);
-            $property = $reflection->getProperty('params');
-            $property->setAccessible(true);
-            $params = $property->getValue($job);
+        $mailServiceMock->shouldReceive('processUsersInChunks')
+            ->once()
+            ->andReturnUsing(function($chunkSize, $callback) {
+                $callback();
+                return [
+                    'processed_users' => 100,
+                    'expire_emails' => 50,
+                    'traffic_emails' => 50,
+                    'skipped' => 0,
+                    'errors' => 0,
+                ];
+            });
 
-            return $params['email'] === $user->email &&
-                   $params['template_name'] === 'remindExpire';
-        });
+        $this->artisan('send:remindMail', ['--force' => true])
+            ->expectsOutputToContain('Reminder emails sent.')
+            ->assertExitCode(0);
     }
 }

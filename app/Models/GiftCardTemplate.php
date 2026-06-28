@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Dflydev\DotAccessData\Data;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -27,6 +28,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class GiftCardTemplate extends Model
 {
+    use HasFactory;
+
     protected $table = 'v2_gift_card_template';
     protected $dateFormat = 'U';
 

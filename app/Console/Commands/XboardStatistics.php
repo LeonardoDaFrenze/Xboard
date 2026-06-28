@@ -54,7 +54,7 @@ class XboardStatistics extends Command
         try {
             $endAt = strtotime(date('Y-m-d'));
             $startAt = strtotime('-1 day', $endAt);
-            $statisticalService = new StatisticalService();
+            $statisticalService = app(StatisticalService::class);
             $statisticalService->setStartAt($startAt);
             $statisticalService->setEndAt($endAt);
             $data = $statisticalService->generateStatData();
