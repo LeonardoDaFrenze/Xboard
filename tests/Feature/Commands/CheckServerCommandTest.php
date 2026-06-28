@@ -5,15 +5,15 @@ namespace Tests\Feature\Commands;
 use App\Models\Server;
 use App\Utils\CacheKey;
 use Illuminate\Support\Facades\Cache;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Tests\TestCase;
 use Mockery;
 
 class CheckServerCommandTest extends TestCase
 {
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function test_check_server_processes_offline_nodes()
     {
         $server1 = new Server();

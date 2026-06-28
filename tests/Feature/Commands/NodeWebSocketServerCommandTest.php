@@ -5,13 +5,13 @@ namespace Tests\Feature\Commands;
 use App\WebSocket\NodeWorker;
 use Tests\TestCase;
 use Mockery;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 class NodeWebSocketServerCommandTest extends TestCase
 {
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function test_ws_server_starts_with_default_options()
     {
         $workerMock = Mockery::mock('overload:' . NodeWorker::class);
@@ -24,10 +24,8 @@ class NodeWebSocketServerCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function test_ws_server_starts_with_custom_options()
     {
         $workerMock = Mockery::mock('overload:' . NodeWorker::class);
