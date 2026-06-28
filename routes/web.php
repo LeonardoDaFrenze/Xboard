@@ -43,14 +43,14 @@ Route::get('/', function (Request $request) {
         }
 
         if (!$themeService->getThemeViewPath($theme)) {
-            throw new Exception('主题视图文件不存在');
+            throw new Exception('Translation not available');
         }
 
         $publicThemePath = public_path('theme/' . $theme);
         if (!File::exists($publicThemePath)) {
             $themePath = $themeService->getThemePath($theme);
             if (!$themePath || !File::copyDirectory($themePath, $publicThemePath)) {
-                throw new Exception('主题初始化失败');
+                throw new Exception('Theme initialization failed');
             }
             Log::info('Theme initialized in public directory', ['theme' => $theme]);
         }
@@ -69,11 +69,11 @@ Route::get('/', function (Request $request) {
             'theme' => $theme,
             'error' => $e->getMessage()
         ]);
-        abort(500, '主题加载失败');
+        abort(500, 'Theme loading failed');
     }
 });
 
-//TODO:: 兼容
+//TODO:: Compatibility
 Route::get('/' . admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key') ?? ''))), function () {
     return view('admin', [
         'title' => admin_setting('app_name', 'XBoard'),

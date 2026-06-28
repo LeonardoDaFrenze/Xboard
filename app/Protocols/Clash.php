@@ -26,7 +26,7 @@ class Clash extends AbstractProtocol
         $user = $this->user;
         $appName = admin_setting('app_name', 'XXXBoard');
 
-        // 优先从数据库配置中获取模板
+// Prioritize getting the template from the database configuration
         $template = subscribe_template('clash');
 
         $config = Yaml::parse($template);
@@ -136,7 +136,7 @@ class Clash extends AbstractProtocol
             $pluginOpts = data_get($protocol_settings, 'plugin_opts', '');
             $array['plugin'] = $plugin;
 
-            // 解析插件选项
+// Parse plugin options
             $parsedOpts = collect(explode(';', $pluginOpts))
                 ->filter()
                 ->mapWithKeys(function ($pair) {
@@ -148,7 +148,7 @@ class Clash extends AbstractProtocol
                 })
                 ->all();
 
-            // 根据插件类型进行字段映射
+// Map fields based on plugin type
             switch ($plugin) {
                 case 'obfs':
                     $array['plugin-opts'] = [
@@ -169,7 +169,7 @@ class Clash extends AbstractProtocol
                     ];
                     break;
                 default:
-                    // 对于其他插件，直接使用解析出的键值对
+// For other plugins, directly use the parsed key-value pairs
                     $array['plugin-opts'] = $parsedOpts;
             }
         }
@@ -279,7 +279,7 @@ class Clash extends AbstractProtocol
         $array['username'] = $password;
         $array['password'] = $password;
 
-        // TLS 配置
+// TLS Configuration
         if (data_get($protocol_settings, 'tls')) {
             $array['tls'] = true;
             $array['skip-cert-verify'] = (bool) data_get($protocol_settings, 'tls_settings.allow_insecure', false);
@@ -300,7 +300,7 @@ class Clash extends AbstractProtocol
         $array['username'] = $password;
         $array['password'] = $password;
 
-        // TLS 配置
+// TLS Configuration
         if (data_get($protocol_settings, 'tls')) {
             $array['tls'] = true;
             $array['skip-cert-verify'] = (bool) data_get($protocol_settings, 'tls_settings.allow_insecure', false);

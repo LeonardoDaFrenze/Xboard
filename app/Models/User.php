@@ -14,51 +14,51 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * App\Models\User
  *
- * @property int $id 用户ID
- * @property string $email 邮箱
- * @property string $password 密码
- * @property string|null $password_algo 加密方式
- * @property string|null $password_salt 加密盐
- * @property string $token 邀请码
+ * @property int $id userID
+ * @property string $email email
+ * @property string $password password
+ * @property string|null $password_algo encryption method
+ * @property string|null $password_salt encryption salt
+ * @property string $token invitation code
  * @property string $uuid
- * @property int|null $invite_user_id 邀请人
- * @property int|null $plan_id 订阅ID
- * @property int|null $group_id 权限组ID
- * @property int|null $transfer_enable 流量(KB)
- * @property int|null $speed_limit 限速Mbps
- * @property int|null $u 上行流量
- * @property int|null $d 下行流量
- * @property int|null $banned 是否封禁
- * @property int|null $remind_expire 到期提醒
- * @property int|null $remind_traffic 流量提醒
- * @property int|null $expired_at 过期时间
- * @property int|null $balance 余额
- * @property int|null $commission_balance 佣金余额
- * @property float $commission_rate 返佣比例
- * @property int|null $commission_type 返佣类型
- * @property int|null $device_limit 设备限制数量
- * @property int|null $discount 折扣
- * @property int|null $last_login_at 最后登录时间
- * @property int|null $parent_id 父账户ID
- * @property int|null $is_admin 是否管理员
- * @property int|null $next_reset_at 下次流量重置时间
- * @property int|null $last_reset_at 上次流量重置时间
+ * @property int|null $invite_user_id referrer
+ * @property int|null $plan_id subscriptionID
+ * @property int|null $group_id permission groupID
+ * @property int|null $transfer_enable traffic(KB)
+ * @property int|null $speed_limit speed limitMbps
+ * @property int|null $u upload traffic
+ * @property int|null $d download traffic
+ * @property int|null $banned whether to ban
+ * @property int|null $remind_expire expiration reminder
+ * @property int|null $remind_traffic traffic reminder
+ * @property int|null $expired_at expiration time
+ * @property int|null $balance balance
+ * @property int|null $commission_balance commission balance
+ * @property float $commission_rate return rate
+ * @property int|null $commission_type return type
+ * @property int|null $device_limit device limit count
+ * @property int|null $discount discount
+ * @property int|null $last_login_at last login time
+ * @property int|null $parent_id parent accountID
+ * @property int|null $is_admin whether admin
+ * @property int|null $next_reset_at next traffic reset time
+ * @property int|null $last_reset_at last traffic reset time
  * @property int|null $telegram_id Telegram ID
- * @property int $reset_count 流量重置次数
+ * @property int $reset_count traffic reset count
  * @property int $created_at
  * @property int $updated_at
- * @property bool $commission_auto_check 是否自动计算佣金
+ * @property bool $commission_auto_check whether to automatically calculate commission
  *
- * @property-read User|null $invite_user 邀请人信息
- * @property-read \App\Models\Plan|null $plan 用户订阅计划
- * @property-read ServerGroup|null $group 权限组
- * @property-read \Illuminate\Database\Eloquent\Collection<int, InviteCode> $codes 邀请码列表
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Order> $orders 订单列表
- * @property-read \Illuminate\Database\Eloquent\Collection<int, StatUser> $stat 统计信息
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Ticket> $tickets 工单列表
- * @property-read \Illuminate\Database\Eloquent\Collection<int, TrafficResetLog> $trafficResetLogs 流量重置记录
- * @property-read User|null $parent 父账户
- * @property-read string $subscribe_url 订阅链接（动态生成）
+ * @property-read User|null $invite_user referrer information
+ * @property-read \App\Models\Plan|null $plan user subscription plan
+ * @property-read ServerGroup|null $group permission group
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, InviteCode> $codes invitation code list
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Order> $orders order list
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, StatUser> $stat statistics
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Ticket> $tickets ticket list
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, TrafficResetLog> $trafficResetLogs traffic reset record
+ * @property-read User|null $parent parent account
+ * @property-read string $subscribe_url subscription link（dynamically generated）
  */
 class User extends Authenticatable
 {
@@ -91,21 +91,21 @@ class User extends Authenticatable
     }
 
     /**
-     * 按邮箱查询（大小写不敏感，兼容所有数据库）
+     * case-insensitive email search（compatible with all databases，// Get referrer information）
      */
     public function scopeByEmail(Builder $query, string $email): Builder
     {
         return $query->where('email', strtolower(trim($email)));
     }
 
-    // 获取邀请人信息
+Get user subscription plan
     public function invite_user(): BelongsTo
     {
         return $this->belongsTo(self::class, 'invite_user_id', 'id');
     }
 
     /**
-     * 获取用户订阅计划
+     * // Get user invitation code list
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function plan(): BelongsTo
@@ -118,7 +118,7 @@ class User extends Authenticatable
         return $this->belongsTo(ServerGroup::class, 'group_id', 'id');
     }
 
-    // 获取用户邀请码列表
+// Associate ticket list
     public function codes(): HasMany
     {
         return $this->hasMany(InviteCode::class, 'user_id', 'id');
@@ -134,7 +134,7 @@ class User extends Authenticatable
         return $this->hasMany(StatUser::class, 'user_id', 'id');
     }
 
-    // 关联工单列表
+Associate traffic reset record
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class, 'user_id', 'id');
@@ -146,7 +146,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 关联流量重置记录
+     * Check if the user is active
      */
     public function trafficResetLogs(): HasMany
     {
@@ -154,7 +154,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 检查用户是否处于活跃状态
+     * Check if the user has available node traffic and sufficient amount
      */
     public function isActive(): bool
     {
@@ -164,7 +164,7 @@ class User extends Authenticatable
     }
 
     /** 
-     * 检查用户是否可用节点流量且充足
+     * Check if traffic needs to be reset
      */
     public function isAvailable(): bool
     {     
@@ -172,7 +172,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 检查是否需要重置流量
+     * Get total used traffic
      */
     public function shouldResetTraffic(): bool
     {
@@ -182,7 +182,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 获取总使用流量
+     * Get remaining traffic
      */
     public function getTotalUsedTraffic(): int
     {
@@ -190,7 +190,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 获取剩余流量
+     * Get traffic usage percentage
      */
     public function getRemainingTraffic(): int
     {
@@ -200,7 +200,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 获取流量使用百分比
+     * Get traffic usage percentage
      */
     public function getTrafficUsagePercentage(): float
     {

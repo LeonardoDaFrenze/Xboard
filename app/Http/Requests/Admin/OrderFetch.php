@@ -15,7 +15,7 @@ class OrderFetch extends FormRequest
     {
         return [
             'filter.*.key' => 'required|in:email,trade_no,status,commission_status,user_id,invite_user_id,callback_no,commission_balance',
-            'filter.*.condition' => 'required|in:>,<,=,>=,<=,模糊,!=',
+            'filter.*.condition' => 'required|in:>,<,=,>=,<=,fuzzy,!=',
             'filter.*.value' => ''
         ];
     }
@@ -23,10 +23,10 @@ class OrderFetch extends FormRequest
     public function messages()
     {
         return [
-            'filter.*.key.required' => '过滤键不能为空',
-            'filter.*.key.in' => '过滤键参数有误',
-            'filter.*.condition.required' => '过滤条件不能为空',
-            'filter.*.condition.in' => '过滤条件参数有误',
+            'filter.*.key.required' => 'The filter key cannot be empty.',
+            'filter.*.key.in' => 'There is an error in the filter key parameter.',
+            'filter.*.condition.required' => 'The filter condition cannot be empty.',
+            'filter.*.condition.in' => 'There is an error in the filter condition parameter.',
         ];
     }
 }

@@ -43,7 +43,7 @@ class ManageController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e);
-            return $this->fail([500, '保存失败']);
+            return $this->fail([500, 'Save failed']);
 
         }
         return $this->success(true);
@@ -55,14 +55,14 @@ class ManageController extends Controller
         if ($request->input('id')) {
             $server = Server::find($request->input('id'));
             if (!$server) {
-                return $this->fail([400202, '服务器不存在']);
+                return $this->fail([400202, 'Server does not exist']);
             }
             try {
                 $server->update($params);
                 return $this->success(true);
             } catch (\Exception $e) {
                 Log::error($e);
-                return $this->fail([500, '保存失败']);
+                return $this->fail([500, 'Save failed']);
             }
         }
 
@@ -71,7 +71,7 @@ class ManageController extends Controller
             return $this->success(true);
         } catch (\Exception $e) {
             Log::error($e);
-            return $this->fail([500, '创建失败']);
+            return $this->fail([500, 'Creation failed']);
         }
     }
 
@@ -86,7 +86,7 @@ class ManageController extends Controller
 
         $server = Server::find($request->id);
         if (!$server) {
-            return $this->fail([400202, '服务器不存在']);
+            return $this->fail([400202, 'Server does not exist']);
         }
 
         if (array_key_exists('show', $params)) {
@@ -100,14 +100,14 @@ class ManageController extends Controller
         }
 
         if (!$server->save()) {
-            return $this->fail([500, '保存失败']);
+            return $this->fail([500, 'Save failed']);
         }
 
         return $this->success(true);
     }
 
     /**
-     * 删除
+     * Delete
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -118,17 +118,17 @@ class ManageController extends Controller
         ]);
         $server = Server::find($request->id);
         if (!$server) {
-            return $this->fail([400202, '服务器不存在']);
+            return $this->fail([400202, 'Server does not exist']);
         }
         if ($server->delete() === false) {
-            return $this->fail([500, '删除失败']);
+            return $this->fail([500, 'Deletion failed']);
         }
 
         return $this->success(true);
     }
 
     /**
-     * 批量删除节点
+     * Batch delete nodes
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -141,23 +141,23 @@ class ManageController extends Controller
 
         $ids = $request->input('ids');
         if (empty($ids)) {
-            return $this->fail([400, '请选择要删除的节点']);
+            return $this->fail([400, 'Please select the nodes to delete']);
         }
 
         try {
             $deleted = Server::whereIn('id', $ids)->delete();
             if ($deleted === false) {
-                return $this->fail([500, '批量删除失败']);
+                return $this->fail([500, 'Batch deletion failed']);
             }
             return $this->success(true);
         } catch (\Exception $e) {
             Log::error($e);
-            return $this->fail([500, '批量删除失败']);
+            return $this->fail([500, 'Batch deletion failed']);
         }
     }
 
     /**
-     * 重置节点流量
+     * Reset node traffic
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -169,7 +169,7 @@ class ManageController extends Controller
 
         $server = Server::find($request->id);
         if (!$server) {
-            return $this->fail([400202, '服务器不存在']);
+            return $this->fail([400202, 'Server does not exist']);
         }
 
         try {
@@ -181,12 +181,12 @@ class ManageController extends Controller
             return $this->success(true);
         } catch (\Exception $e) {
             Log::error($e);
-            return $this->fail([500, '重置失败']);
+            return $this->fail([500, 'Reset failed']);
         }
     }
 
     /**
-     * 批量重置节点流量
+     * Batch reset node traffic
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -199,7 +199,7 @@ class ManageController extends Controller
 
         $ids = $request->input('ids');
         if (empty($ids)) {
-            return $this->fail([400, '请选择要重置的节点']);
+            return $this->fail([400, 'Please select the nodes to reset']);
         }
 
         try {
@@ -212,12 +212,12 @@ class ManageController extends Controller
             return $this->success(true);
         } catch (\Exception $e) {
             Log::error($e);
-            return $this->fail([500, '批量重置失败']);
+            return $this->fail([500, 'Batch reset failed']);
         }
     }
 
     /**
-     * 批量更新节点属性（show等）
+     * Batch update node properties（showWait）
      */
     public function batchUpdate(Request $request)
     {
@@ -231,7 +231,7 @@ class ManageController extends Controller
 
         $ids = $params['ids'];
         if (empty($ids)) {
-            return $this->fail([400, '请选择要更新的节点']);
+            return $this->fail([400, 'Please select the nodes to update']);
         }
 
         $update = [];
@@ -246,7 +246,7 @@ class ManageController extends Controller
         }
 
         if (empty($update)) {
-            return $this->fail([400, '没有可更新的字段']);
+            return $this->fail([400, 'No fields to update']);
         }
 
         try {
@@ -260,12 +260,12 @@ class ManageController extends Controller
             return $this->success(true);
         } catch (\Exception $e) {
             Log::error($e);
-            return $this->fail([500, '批量更新失败']);
+            return $this->fail([500, 'Batch update failed']);
         }
     }
 
     /**
-     * 复制节点
+     * Copy node
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -273,7 +273,7 @@ class ManageController extends Controller
     {
         $server = Server::find($request->input('id'));
         if (!$server) {
-            return $this->fail([400202, '服务器不存在']);
+            return $this->fail([400202, 'Server does not exist']);
         }
 
         $copiedServer = $server->replicate();

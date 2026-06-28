@@ -11,18 +11,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * App\Models\GiftCardCode
  *
  * @property int $id
- * @property int $template_id 模板ID
- * @property GiftCardTemplate $template 关联模板
- * @property string $code 兑换码
- * @property string|null $batch_id 批次ID
- * @property int $status 状态
- * @property int|null $user_id 使用用户ID
- * @property int|null $used_at 使用时间
- * @property int|null $expires_at 过期时间
- * @property array|null $actual_rewards 实际奖励
- * @property int $usage_count 使用次数
- * @property int $max_usage 最大使用次数
- * @property array|null $metadata 额外数据
+ * @property int $template_id TemplateID
+ * @property GiftCardTemplate $template Associated Template
+ * @property string $code Redemption Code
+ * @property string|null $batch_id BatchID
+ * @property int $status Status
+ * @property int|null $user_id User UsedID
+ * @property int|null $used_at Usage Time
+ * @property int|null $expires_at Expiry Time
+ * @property array|null $actual_rewards Actual Reward
+ * @property int $usage_count Number of Uses
+ * @property int $max_usage Maximum Number of Uses
+ * @property array|null $metadata Additional Data
  * @property int $created_at
  * @property int $updated_at
  */
@@ -33,11 +33,11 @@ class GiftCardCode extends Model
     protected $table = 'v2_gift_card_code';
     protected $dateFormat = 'U';
 
-    // 状态常量
-    const STATUS_UNUSED = 0;        // 未使用
-    const STATUS_USED = 1;          // 已使用
-    const STATUS_EXPIRED = 2;       // 已过期
-    const STATUS_DISABLED = 3;      // 已禁用
+// Status Constants
+    const STATUS_UNUSED = 0;        // Unused
+    const STATUS_USED = 1;          // Used
+    const STATUS_EXPIRED = 2;       // Expired
+    const STATUS_DISABLED = 3;      // Disabled
 
     protected $fillable = [
         'template_id',
@@ -63,28 +63,28 @@ class GiftCardCode extends Model
     ];
 
     /**
-     * 获取状态映射
+     * Get Status Mapping
      */
     public static function getStatusMap(): array
     {
         return [
-            self::STATUS_UNUSED => '未使用',
-            self::STATUS_USED => '已使用',
-            self::STATUS_EXPIRED => '已过期',
-            self::STATUS_DISABLED => '已禁用',
+            self::STATUS_UNUSED => 'Unused',
+            self::STATUS_USED => 'Used',
+            self::STATUS_EXPIRED => 'Expired',
+            self::STATUS_DISABLED => 'Disabled',
         ];
     }
 
     /**
-     * 获取状态名称
+     * Get Status Name
      */
     public function getStatusNameAttribute(): string
     {
-        return self::getStatusMap()[$this->status] ?? '未知状态';
+        return self::getStatusMap()[$this->status] ?? 'Unknown Status';
     }
 
     /**
-     * 关联礼品卡模板
+     * Associate Gift Card Template
      */
     public function template(): BelongsTo
     {
@@ -92,7 +92,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 关联使用用户
+     * Associate User
      */
     public function user(): BelongsTo
     {
@@ -100,7 +100,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 关联使用记录
+     * Associate Usage Record
      */
     public function usages(): HasMany
     {
@@ -108,21 +108,21 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 检查是否可用
+     * Check Availability
      */
     public function isAvailable(): bool
     {
-        // 检查状态
+// Check Status
         if (in_array($this->status, [self::STATUS_EXPIRED, self::STATUS_DISABLED])) {
             return false;
         }
 
-        // 检查是否过期
+// Check if Expired
         if ($this->expires_at && $this->expires_at < time()) {
             return false;
         }
 
-        // 检查使用次数
+// Check Number of Uses
         if ($this->usage_count >= $this->max_usage) {
             return false;
         }
@@ -131,7 +131,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 检查是否已过期
+     * Check if Expired
      */
     public function isExpired(): bool
     {
@@ -139,7 +139,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 标记为已使用
+     * Mark as Used
      */
     public function markAsUsed(User $user): bool
     {
@@ -152,7 +152,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 标记为已过期
+     * Mark as Expired
      */
     public function markAsExpired(): bool
     {
@@ -161,7 +161,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 标记为已禁用
+     * Mark as Disabled
      */
     public function markAsDisabled(): bool
     {
@@ -170,7 +170,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 生成兑换码
+     * Generate Redemption Code
      */
     public static function generateCode(string $prefix = 'GC'): string
     {
@@ -183,7 +183,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 批量生成兑换码
+     * Batch Generate Redemption Codes
      */
     public static function batchGenerate(int $templateId, int $count, array $options = []): string
     {
@@ -212,7 +212,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 设置实际奖励（用于盲盒等）
+     * Set Actual Reward（For Blind Boxes and Others）
      */
     public function setActualRewards(array $rewards): bool
     {
@@ -221,7 +221,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 获取实际奖励
+     * Get Actual Reward
      */
     public function getActualRewards(): array
     {
@@ -229,16 +229,16 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 检查兑换码格式
+     * Check Redemption Code Format
      */
     public static function validateCodeFormat(string $code): bool
     {
-        // 基本格式验证：字母数字组合，长度8-32
+// Basic Format Validation: Alphanumeric, Length 8-32
         return preg_match('/^[A-Z0-9]{8,32}$/', $code);
     }
 
     /**
-     * 根据批次ID获取兑换码
+     * By BatchIDGet Redemption Code
      */
     public static function getByBatchId(string $batchId)
     {
@@ -246,7 +246,7 @@ class GiftCardCode extends Model
     }
 
     /**
-     * 清理过期兑换码
+     * Clean Expired Redemption Codes
      */
     public static function cleanupExpired(): int
     {

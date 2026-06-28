@@ -35,7 +35,7 @@ class MailTemplateController extends Controller
         $name = $request->input('name');
         $meta = MailTemplate::getMeta($name);
         if (!$meta) {
-            return $this->fail([404, '模板不存在']);
+            return $this->fail([404, 'Template does not exist']);
         }
 
         $db = MailTemplate::where('name', $name)->first();
@@ -61,7 +61,7 @@ class MailTemplateController extends Controller
 
         $meta = MailTemplate::getMeta($params['name']);
         if (!$meta) {
-            return $this->fail([404, '模板不存在']);
+            return $this->fail([404, 'Template does not exist']);
         }
 
         $errors = MailTemplate::validateContent($params['name'], $params['content']);
@@ -83,7 +83,7 @@ class MailTemplateController extends Controller
         $name = $request->input('name');
         $meta = MailTemplate::getMeta($name);
         if (!$meta) {
-            return $this->fail([404, '模板不存在']);
+            return $this->fail([404, 'Template does not exist']);
         }
 
         MailTemplate::where('name', $name)->delete();
@@ -96,7 +96,7 @@ class MailTemplateController extends Controller
         $name = $request->input('name');
         $meta = MailTemplate::getMeta($name);
         if (!$meta) {
-            return $this->fail([404, '模板不存在']);
+            return $this->fail([404, 'Template does not exist']);
         }
 
         $email = $request->input('email', $request->user()->email);
@@ -111,12 +111,12 @@ class MailTemplateController extends Controller
             ]);
 
             if ($log['error']) {
-                return $this->fail([500, '发送失败: ' . $log['error']]);
+                return $this->fail([500, 'Send failed:' . $log['error']]);
             }
             return $this->success(true);
         } catch (\Exception $e) {
             Log::error($e);
-            return $this->fail([500, '发送失败: ' . $e->getMessage()]);
+            return $this->fail([500, 'Send failed:' . $e->getMessage()]);
         }
     }
 
@@ -124,12 +124,12 @@ class MailTemplateController extends Controller
     {
         $appName = admin_setting('app_name', 'XXXBoard');
         return match ($name) {
-            'verify' => "{$appName} - 验证码测试",
-            'notify' => "{$appName} - 通知测试",
-            'remindExpire' => "{$appName} - 到期提醒测试",
-            'remindTraffic' => "{$appName} - 流量提醒测试",
-            'mailLogin' => "{$appName} - 登录链接测试",
-            default => "{$appName} - 邮件测试",
+            'verify' => "{$appName} - Verification Code Test",
+            'notify' => "{$appName} - Notification Test",
+            'remindExpire' => "{$appName} - Expiration Reminder Test",
+            'remindTraffic' => "{$appName} - Traffic Reminder Test",
+            'mailLogin' => "{$appName} - Login Link Test",
+            default => "{$appName} - Email Test",
         };
     }
 
@@ -146,7 +146,7 @@ class MailTemplateController extends Controller
             ],
             'notify' => [
                 'name' => $appName,
-                'content' => '这是一封测试通知邮件。',
+                'content' => 'This is a test notification email.',
                 'url' => $appUrl,
             ],
             'remindExpire' => [
@@ -170,11 +170,11 @@ class MailTemplateController extends Controller
     {
         $appName = admin_setting('app_name', 'XXXBoard');
         return match ($name) {
-            'verify' => "{$appName} - 邮箱验证码",
-            'notify' => "{$appName} - 站点通知",
-            'remindExpire' => "{$appName} - 服务即将到期",
-            'remindTraffic' => "{$appName} - 流量使用提醒",
-            'mailLogin' => "{$appName} - 邮件登录",
+            'verify' => "{$appName} - Email Verification Code",
+            'notify' => "{$appName} - Site Notification",
+            'remindExpire' => "{$appName} - Service Expiring Soon",
+            'remindTraffic' => "{$appName} - Traffic Usage Reminder",
+            'mailLogin' => "{$appName} - Email Login",
             default => "{$appName}",
         };
     }
@@ -232,7 +232,7 @@ class MailTemplateController extends Controller
                         </tr>
                         <tr>
                             <td style="font-size:14px;color:#333;padding:24px 40px 0 40px">
-                                尊敬的用户您好！<br /><br />{$body}
+                                Dear User,！<br /><br />{$body}
                             </td>
                         </tr>
                         </tbody>
@@ -242,7 +242,7 @@ class MailTemplateController extends Controller
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tbody>
                         <tr>
-                            <td style="padding:20px 40px;font-size:12px;color:#999;line-height:20px;background:#f7f7f7"><a href="{{url}}" style="font-size:14px;color:#929292">返回{{name}}</a></td>
+                            <td style="padding:20px 40px;font-size:12px;color:#999;line-height:20px;background:#f7f7f7"><a href="{{url}}" style="font-size:14px;color:#929292">Back{{name}}</a></td>
                         </tr>
                         </tbody>
                     </table>
@@ -255,12 +255,12 @@ class MailTemplateController extends Controller
 HTML;
 
         return match ($name) {
-            'verify' => $layout('邮箱验证码', '您的验证码是：{{code}}，请在 5 分钟内进行验证。如果该验证码不为您本人申请，请无视。'),
-            'notify' => $layout('网站通知', '{{content}}'),
-            'remindExpire' => $layout('服务到期提醒', '您的服务即将在24小时内到期，如需继续使用请及时续费。'),
-            'remindTraffic' => $layout('流量使用提醒', '您的流量使用已达到80%，请注意流量使用情况。'),
-            'mailLogin' => $layout('登入到{{name}}', '您正在登入到{{name}}, 请在 5 分钟内点击下方链接进行登入。如果您未授权该登入请求，请无视。<a href="{{link}}">{{link}}</a>'),
-            default => $layout('通知', '{{content}}'),
+            'verify' => $layout('Email Verification Code', 'Your verification code is: {{code}}, please verify within 5 minutes. If this code was not requested by you, ignore it.'),
+            'notify' => $layout('Website Notification', '{{content}}'),
+            'remindExpire' => $layout('Service Expiration Reminder', 'Your service will expire in the next 24 hours. Please renew if you need to continue using it.'),
+            'remindTraffic' => $layout('Traffic Usage Reminder', 'Your traffic usage has reached 80%. Please monitor your traffic usage.'),
+            'mailLogin' => $layout('Logging into {{name}}', 'You are logging into {{name}}, please click the link below within 5 minutes to log in. If you did not authorize this login request, ignore it.<a href="{{link}}">{{link}}</a>'),
+            default => $layout('Notification', '{{content}}'),
         };
     }
 }

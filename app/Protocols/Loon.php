@@ -76,7 +76,7 @@ class Loon extends AbstractProtocol
         if (data_get($protocol_settings, 'plugin') && data_get($protocol_settings, 'plugin_opts')) {
             $plugin = data_get($protocol_settings, 'plugin');
             $pluginOpts = data_get($protocol_settings, 'plugin_opts', '');
-            // 解析插件选项
+Translation of plugin options
             $parsedOpts = collect(explode(';', $pluginOpts))
                 ->filter()
                 ->mapWithKeys(function ($pair) {
@@ -377,7 +377,7 @@ class Loon extends AbstractProtocol
         if ($serverName = data_get($protocol_settings, 'tls.server_name')) {
             $config[] = "sni={$serverName}";
         }
-         // ✅ 跳过证书校验
+// ✅ Skip certificate verification
          if (data_get($protocol_settings, 'tls.allow_insecure')) {
             $config[] = 'skip-cert-verify=true';
         }

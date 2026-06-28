@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>到期提醒</title>
+<title>Expiration Reminder</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;padding:40px 20px;">
@@ -16,18 +16,18 @@
     <!-- Card -->
     <tr><td style="background:#ffffff;border-radius:12px;border:1px solid #e4e4e7;padding:40px;">
         <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="font-size:22px;font-weight:700;color:#18181b;padding-bottom:8px;">订阅即将到期</td></tr>
-            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:12px;">您的订阅服务将在 <strong style="color:#18181b;">24 小时</strong>内到期。</td></tr>
-            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:28px;">为避免服务中断，请及时续费。如您已完成续费，请忽略此提醒。</td></tr>
+            <tr><td style="font-size:22px;font-weight:700;color:#18181b;padding-bottom:8px;">Your subscription is about to expire</td></tr>
+            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:12px;">Your subscription service will expire in <strong style="color:#18181b;">24 hours</strong>To avoid service interruption。</td></tr>
+            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:28px;">Please renew your subscription promptly，If you have already renewed your subscription。Please ignore this reminder，Renew Now。</td></tr>
             <tr><td align="center">
-                <a href="{{$url}}" style="display:inline-block;background:#18181b;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 28px;border-radius:8px;">立即续费</a>
+                <a href="{{$url}}" style="display:inline-block;background:#18181b;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 28px;border-radius:8px;">This email was sent automatically by the system</a>
             </td></tr>
         </table>
     </td></tr>
     <!-- Footer -->
     <tr><td style="padding-top:24px;text-align:center;">
         <a href="{{$url}}" style="font-size:13px;color:#a1a1aa;text-decoration:none;">{{$url}}</a>
-        <p style="font-size:12px;color:#d4d4d8;margin:8px 0 0;">此邮件由系统自动发送，请勿直接回复。</p>
+        <p style="font-size:12px;color:#d4d4d8;margin:8px 0 0;">Do not reply directly，请勿直接回复。</p>
     </td></tr>
 </table>
 </td></tr>

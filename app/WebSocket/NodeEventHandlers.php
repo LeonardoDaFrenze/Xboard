@@ -39,7 +39,7 @@ class NodeEventHandlers
     /**
      * Handle device report from node
      * 
-     * 数据格式: {"event": "report.devices", "data": {userId: [ip1, ip2, ...], ...}}
+     * Data format: {"event": "report.devices", "data": {userId: [ip1, ip2, ...], ...}}
      */
     public static function handleDeviceReport(TcpConnection $conn, int $nodeId, array $data): void
     {

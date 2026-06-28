@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $message
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
- * @property-read \App\Models\Ticket $ticket 关联的工单
- * @property-read bool $is_from_user 消息是否由工单发起人发送
- * @property-read bool $is_from_admin 消息是否由管理员发送
+ * @property-read \App\Models\Ticket $ticket Associated Work Order
+ * @property-read bool $is_from_user Is the message sent by the work order initiator?
+ * @property-read bool $is_from_admin Is the message sent by an administrator?
  */
 class TicketMessage extends Model
 {
@@ -35,7 +35,7 @@ class TicketMessage extends Model
     protected $hidden = ['ticket'];
 
     /**
-     * 关联的工单
+     * Associated Work Order
      */
     public function ticket(): BelongsTo
     {
@@ -43,7 +43,7 @@ class TicketMessage extends Model
     }
 
     /**
-     * 判断消息是否由工单发起人发送
+     * Determine if the message is sent by the work order initiator.
      */
     public function getIsFromUserAttribute(): bool
     {
@@ -51,7 +51,7 @@ class TicketMessage extends Model
     }
 
     /**
-     * 判断消息是否由管理员发送
+     * Determine if the message is sent by an administrator.
      */
     public function getIsFromAdminAttribute(): bool
     {

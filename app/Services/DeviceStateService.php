@@ -13,7 +13,7 @@ class DeviceStateService
     private const DB_THROTTLE = 10;             // update db throttle
 
     /**
-     * 移除 Redis key 的前缀
+     * Remove Redis key Remove the prefix
      */
     private function removeRedisPrefix(string $key): string
     {
@@ -22,8 +22,8 @@ class DeviceStateService
     }
 
     /**
-     * 批量设置设备
-     * 用于 HTTP /alive 和 WebSocket report.devices
+     * Batch set devices for a node
+     * To HTTP /alive and WebSocket report.devices
      */
     public function setDevices(int $userId, int $nodeId, array $ips): void
     {
@@ -48,8 +48,8 @@ class DeviceStateService
     }
 
     /**
-     * 获取某节点的所有设备数据
-     * 返回: {userId: [ip1, ip2, ...], ...}
+     * Get all device data of a certain node
+     * Return: {userId: [ip1, ip2, ...], ...}
      */
     public function getNodeDevices(int $nodeId): array
     {
@@ -72,7 +72,7 @@ class DeviceStateService
     }
 
     /**
-     * 删除某节点某用户的设备
+     * Delete a user's device on a certain node
      */
     public function removeNodeDevices(int $nodeId, int $userId): void
     {
@@ -87,7 +87,7 @@ class DeviceStateService
     }
 
     /**
-     * 清除节点所有设备数据（用于节点断开连接）
+     * Clear all device data of a node（Used when a node disconnects）
      */
     public function clearAllNodeDevices(int $nodeId): array
     {

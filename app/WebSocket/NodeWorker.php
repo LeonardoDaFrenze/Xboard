@@ -148,7 +148,7 @@ class NodeWorker
             Timer::del($conn->authTimer);
         }
 
-        // 判断认证模式
+// Determine the authentication mode
         if (!empty($params['machine_id'])) {
             $this->authenticateMachine($conn, $params);
         } else {
@@ -157,7 +157,7 @@ class NodeWorker
     }
 
     /**
-     * 旧模式：单节点认证
+     * Old mode：Single-node authentication
      */
     private function authenticateNode(TcpConnection $conn, array $params): void
     {
@@ -202,7 +202,7 @@ class NodeWorker
     }
 
     /**
-     * 新模式：机器认证，自动注册该机器下所有已启用节点
+     * New mode：Machine authentication，Automatically register all enabled nodes under this machine
      */
     private function authenticateMachine(TcpConnection $conn, array $params): void
     {
@@ -226,7 +226,7 @@ class NodeWorker
         $machine->forceFill(['last_seen_at' => now()->timestamp])->saveQuietly();
         NodeRegistry::addMachine($machineId, $conn);
 
-        // 把同一个连接注册到该机器下所有节点
+// Register the same connection to all nodes under this machine
         $nodeIds = [];
         $deviceService = app(DeviceStateService::class);
         foreach ($nodes as $node) {
@@ -236,7 +236,7 @@ class NodeWorker
             $nodeIds[] = $node->id;
         }
 
-        // 连接上记录所属机器和节点列表
+// Record the associated machine and node list when a connection is established
         $conn->machineId = $machineId;
         $conn->machineNodeIds = $nodeIds;
 
@@ -254,7 +254,7 @@ class NodeWorker
             ],
         ]));
 
-        // 为每个节点推送完整同步
+// Push full synchronization for each node
         foreach ($nodes as $node) {
             NodeEventHandlers::pushFullSync($conn, $node);
         }
@@ -269,7 +269,7 @@ class NodeWorker
 
         $event = $msg['event'] ?? '';
 
-        // 机器连接：从消息中读取 node_id 来分派到具体节点
+// Machine connection: Dispatch to specific nodes based on node_id from the message
         if (!empty($conn->machineNodeIds)) {
             if ($event === 'pong') {
                 foreach ($conn->machineNodeIds as $nid) {
@@ -289,7 +289,7 @@ class NodeWorker
             return;
         }
 
-        // 旧模式：单节点
+// Old mode: Single-node
         $nodeId = $conn->nodeId ?? null;
         if (isset($this->handlers[$event]) && $nodeId) {
             $handler = $this->handlers[$event];
@@ -301,7 +301,7 @@ class NodeWorker
     {
         $service = app(DeviceStateService::class);
 
-        // 机器模式：清理所有关联节点
+// Machine mode: Clean up all associated nodes
         if (!empty($conn->machineNodeIds)) {
             $machineId = $conn->machineId ?? 'unknown';
             foreach ($conn->machineNodeIds as $nodeId) {
@@ -326,7 +326,7 @@ class NodeWorker
             return;
         }
 
-        // 旧模式：单节点
+// Old mode: Single-node
         if (!empty($conn->nodeId)) {
             $nodeId = $conn->nodeId;
             NodeRegistry::remove($nodeId, $conn);

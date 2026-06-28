@@ -26,7 +26,7 @@ class SingBox extends AbstractProtocol
     const DEFAULT_TEMPLATE_FILE = 'resources/rules/default.sing-box.json';
 
     /**
-     * 多客户端协议支持配置
+     * Multi-client protocol support configuration
      */
     protected $protocolRequirements = [
         'sing-box' => [
@@ -224,7 +224,7 @@ class SingBox extends AbstractProtocol
      * Safely match a user-supplied pattern against a node tag.
      *
      * Accepts either:
-     *   - a bare pattern (e.g. "HK|香港") — wrapped with `~...~ui` delimiters
+     *   - a bare pattern (e.g. "HK|Hong Kong") — wrapped with `~...~ui` delimiters
      *   - a fully-delimited pattern (e.g. "/foo/i", "#bar#u") — used as-is
      *
      * Uses `~` as the default delimiter (rare in node names) and escapes any
@@ -267,10 +267,10 @@ class SingBox extends AbstractProtocol
      * Accepted shapes (string or array, mixed freely):
      *   - "direct"                 → built-in outbound tag (direct/block/...)
      *   - "Singapore-03"           → exact node tag
-     *   - "节点选择"                → another group's tag defined in template
-     *   - "JP|日本"                → pattern matched against available node tags
+     *   - "Node selection"                → another group's tag defined in template
+     *   - "JP|Japan"                → pattern matched against available node tags
      *   - ["HK-01", "JP-02"]       → list, each resolved in order, first hit wins
-     *   - ["JP|日本", "direct"]    → pattern first, then hard fallback
+     *   - ["JP|Japan", "direct"]    → pattern first, then hard fallback
      *
      * Returns the first non-empty resolution. Logs if nothing resolves.
      */
@@ -312,8 +312,8 @@ class SingBox extends AbstractProtocol
     }
 
     /**
-     * 根据客户端版本自适应配置格式
-     * 模板基准格式: 1.13.0+ (最新)
+     * Adaptive configuration format based on client version
+     * Template benchmark format: 1.13.0+ (Latest)
      */
     protected function adaptConfigForVersion(): void
     {
@@ -322,34 +322,34 @@ class SingBox extends AbstractProtocol
             return;
         }
 
-        // >= 1.13.0: 移除已删除的 block/dns 出站
+// >= 1.13.0: Remove deleted block/dns outbound
         if (version_compare($coreVersion, '1.13.0', '>=')) {
             $this->upgradeSpecialOutboundsToActions();
         }
 
-        // < 1.11.0: rule action 降级为旧出站; 恢复废弃字段
+// < 1.11.0: Rule action downgrade to old outbound; restore deprecated fields
         if (version_compare($coreVersion, '1.11.0', '<')) {
             $this->downgradeActionsToSpecialOutbounds();
             $this->restoreDeprecatedInboundFields();
         }
 
-        // < 1.12.0: DNS type+server → 旧 address 格式
+// < 1.12.0: DNS type+server → Old address format
         if (version_compare($coreVersion, '1.12.0', '<')) {
             $this->convertDnsServersToLegacy();
         }
 
-        // < 1.10.0: tun address 数组 → inet4_address/inet6_address
+// < 1.10.0: tun address array → inet4_address/inet6_address
         if (version_compare($coreVersion, '1.10.0', '<')) {
             $this->convertTunAddressToLegacy();
         }
     }
 
     /**
-     * 获取核心版本 (Hiddify/SFM 等映射到内核版本)
+     * Get core version (Hiddify/SFM Map to kernel version)
      */
     private function getSingBoxCoreVersion(): ?string
     {
-        // 优先从 UA 提取核心版本
+// Prioritize extracting core version from UA
         if (!empty($this->userAgent)) {
             if (preg_match('/sing-box\s+v?(\d+(?:\.\d+){0,2})/i', $this->userAgent, $matches)) {
                 return $matches[1];
@@ -368,7 +368,7 @@ class SingBox extends AbstractProtocol
     }
 
     /**
-     * sing-box >= 1.13.0: block/dns 出站升级为 action
+     * sing-box >= 1.13.0: block/dns Upgrade outbound to action
      */
     private function upgradeSpecialOutboundsToActions(): void
     {
@@ -402,7 +402,7 @@ class SingBox extends AbstractProtocol
     }
 
     /**
-     * sing-box < 1.11.0: rule action 降级为旧 block/dns 出站
+     * sing-box < 1.11.0: rule action Downgrade to old block/dns Outbound
      */
     private function downgradeActionsToSpecialOutbounds(): void
     {
@@ -439,7 +439,7 @@ class SingBox extends AbstractProtocol
     }
 
     /**
-     * sing-box < 1.11.0: 恢复废弃的入站字段
+     * sing-box < 1.11.0: Restore deprecated inbound fields
      */
     private function restoreDeprecatedInboundFields(): void
     {
@@ -457,7 +457,7 @@ class SingBox extends AbstractProtocol
     }
 
     /**
-     * sing-box < 1.12.0: 将新 DNS server type+server 格式转换为旧 address 格式
+     * sing-box < 1.12.0: Convert new DNS server type+server format to old address format
      */
     private function convertDnsServersToLegacy(): void
     {
@@ -503,7 +503,7 @@ class SingBox extends AbstractProtocol
     }
 
     /**
-     * sing-box < 1.10.0: 将 tun address 数组转换为 inet4_address/inet6_address
+     * sing-box < 1.10.0: Convert tun address array to inet4_address/inet6_address
      */
     private function convertTunAddressToLegacy(): void
     {
@@ -690,7 +690,7 @@ class SingBox extends AbstractProtocol
                 'insecure' => (bool) data_get($protocol_settings, 'tls.allow_insecure', false),
             ]
         ];
-        // 支持 1.11.0 版本及以上 `server_ports` 和 `hop_interval` 配置
+// Support `server_ports` and `hop_interval` configuration from version 1.11.0 onwards
         if ($this->supportsFeature('sing-box', '1.11.0')) {
             if (isset($server['ports'])) {
                 $baseConfig['server_ports'] = [str_replace('-', ':', $server['ports'])];
@@ -797,7 +797,7 @@ class SingBox extends AbstractProtocol
             'tag' => $server['name'],
             'server' => $server['host'],
             'server_port' => $server['port'],
-            'version' => '5', // 默认使用 socks5
+            'version' => '5', // Default use socks5
             'username' => $password,
             'password' => $password,
         ];

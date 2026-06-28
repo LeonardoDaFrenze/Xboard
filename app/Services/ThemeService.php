@@ -57,13 +57,13 @@ class ThemeService
     {
         $themes = [];
 
-        // 获取系统主题
+// Get system theme
         $systemPath = base_path(self::SYSTEM_THEME_DIR);
         if (File::exists($systemPath)) {
             $themes = $this->getThemesFromPath($systemPath, false);
         }
 
-        // 获取用户主题
+// Get user theme
         $userPath = base_path(self::USER_THEME_DIR);
         if (File::exists($userPath)) {
             $themes = array_merge($themes, $this->getThemesFromPath($userPath, true));
@@ -159,7 +159,7 @@ class ThemeService
                     $this->cleanupThemeFiles($config['name']);
                     File::deleteDirectory($targetPath);
                     File::copyDirectory($sourcePath, $targetPath);
-                    // 更新主题时保留用户配置
+// Retain user configuration when updating the theme
                     $this->initConfig($config['name'], true);
                     return true;
                 } else {
@@ -399,8 +399,8 @@ class ThemeService
     /**
      * Initialize theme config
      * 
-     * @param string $theme 主题名称
-     * @param bool $preserveExisting 是否保留现有配置（更新主题时使用）
+     * @param string $theme Theme name
+     * @param bool $preserveExisting Whether to retain existing configuration（Use when updating the theme）
      */
     private function initConfig(string $theme, bool $preserveExisting = false): void
     {

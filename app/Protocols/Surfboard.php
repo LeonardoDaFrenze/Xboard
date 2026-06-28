@@ -81,8 +81,8 @@ class Surfboard extends AbstractProtocol
         $useTraffic = $upload + $download;
         $totalTraffic = round($user['transfer_enable'] / (1024 * 1024 * 1024), 2);
         $unusedTraffic = $totalTraffic - $useTraffic;
-        $expireDate = !$user['expired_at'] ? '长期有效' : date('Y-m-d H:i:s', $user['expired_at']);
-        $subscribeInfo = "title={$appName}订阅信息, content=上传流量：{$upload}GB\\n下载流量：{$download}GB\\n剩余流量：{$unusedTraffic}GB\\n套餐流量：{$totalTraffic}GB\\n到期时间：{$expireDate}";
+        $expireDate = !$user['expired_at'] ? 'Long-term valid' : date('Y-m-d H:i:s', $user['expired_at']);
+        $subscribeInfo = "title={$appName} subscription information, content=Upload traffic: {$upload}GB\\nDownload traffic: {$download}GB\\nRemaining traffic: {$unusedTraffic}GB\\nPackage traffic: {$totalTraffic}GB\\nExpiry date: {$expireDate}";
         $config = str_replace('$subscribe_info', $subscribeInfo, $config);
 
         return response($config, 200)
@@ -107,7 +107,7 @@ class Surfboard extends AbstractProtocol
         if (data_get($protocol_settings, 'plugin') && data_get($protocol_settings, 'plugin_opts')) {
             $plugin = data_get($protocol_settings, 'plugin');
             $pluginOpts = data_get($protocol_settings, 'plugin_opts', '');
-            // 解析插件选项
+// Parse plugin options
             $parsedOpts = collect(explode(';', $pluginOpts))
                 ->filter()
                 ->mapWithKeys(function ($pair) {
@@ -217,7 +217,7 @@ class Surfboard extends AbstractProtocol
             $config[] = "sni={$serverName}";
         }
     
-        // 跳过证书校验
+// Skip certificate verification
         if (data_get($protocol_settings, 'tls.allow_insecure')) {
             $config[] = "skip-cert-verify=true";
         }

@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\StatServer
  *
  * @property int $id
- * @property int $server_id 服务器ID
- * @property int $u 上行流量
- * @property int $d 下行流量
- * @property int $record_at 记录时间
+ * @property int $server_id ServerID
+ * @property int $u Upload Traffic
+ * @property int $d Download Traffic
+ * @property int $record_at Record Time
  * @property int $created_at
  * @property int $updated_at
- * @property-read int $value 通过SUM(u + d)计算的总流量值，仅在查询指定时可用
+ * @property-read int $value PassSUM(u + d)Calculated Total Traffic Value，Available Only When Querying a Specific Time
  */
 class StatServer extends Model
 {

@@ -155,21 +155,21 @@ class General extends AbstractProtocol
     public static function buildVless($uuid, $server)
     {
         $protocol_settings = $server['protocol_settings'];
-        $host = $server['host']; //节点地址
-        $port = $server['port']; //节点端口
-        $name = $server['name']; //节点名称
+        $host = $server['host']; //Node Address
+        $port = $server['port']; //Node Port
+        $name = $server['name']; //Node Name
 
         $config = [
-            'mode' => 'multi', //grpc传输模式
-            'security' => '', //传输层安全 tls/reality
+            'mode' => 'multi', //grpcTransmission Mode
+            'security' => '', //Transport Layer Security tls/reality
             'encryption' => match (data_get($protocol_settings, 'encryption.enabled')) {
                 true => data_get($protocol_settings, 'encryption.encryption', 'none'),
                 default => 'none'
             },
-            'type' => data_get($server, 'protocol_settings.network'), //传输协议
+            'type' => data_get($server, 'protocol_settings.network'), //Transport Protocol
             'flow' => data_get($protocol_settings, 'flow'),
         ];
-        // 处理TLS
+// Handle TLS
         switch (data_get($server, 'protocol_settings.tls')) {
             case 1:
                 $config['security'] = "tls";
@@ -197,7 +197,7 @@ class General extends AbstractProtocol
             default:
                 break;
         }
-        // 处理传输协议
+// Handle transport protocol
         switch (data_get($server, 'protocol_settings.network')) {
             case 'ws':
                 if ($path = data_get($protocol_settings, 'network_settings.path'))
@@ -373,17 +373,17 @@ class General extends AbstractProtocol
         $name = rawurlencode($server['name']);
         $addr = Helper::wrapIPv6($server['host']);
         $port = $server['port'];
-        $uuid = $password; // v2rayN格式里，uuid和password都是密码部分
+        $uuid = $password; // v2rayNBoth are password parts in the format，uuidandpasswordare the password part
         $pass = $password;
 
         $queryParams = [];
 
-        // 填充sni参数
+// Fill sni parameter
         if ($sni = data_get($protocol_settings, 'tls.server_name')) {
             $queryParams['sni'] = $sni;
         }
 
-        // alpn参数，支持多值时用逗号连接
+// alpn parameter, connect multiple values with commas
         if ($alpn = data_get($protocol_settings, 'alpn')) {
             if (is_array($alpn)) {
                 $queryParams['alpn'] = implode(',', $alpn);
@@ -392,11 +392,11 @@ class General extends AbstractProtocol
             }
         }
 
-        // congestion_controller参数，默认cubic
+// congestion_controller parameter, default cubic
         $congestion = data_get($protocol_settings, 'congestion_control', 'cubic');
         $queryParams['congestion_control'] = $congestion;
 
-        // udp_relay_mode参数，默认native
+// udp_relay_mode parameter, default native
         $udpRelay = data_get($protocol_settings, 'udp_relay_mode', 'native');
         $queryParams['udp-relay-mode'] = $udpRelay;
 
@@ -406,8 +406,8 @@ class General extends AbstractProtocol
 
         $query = http_build_query($queryParams);
 
-        // 构造完整URI，格式：
-        // Tuic://uuid:password@host:port?sni=xxx&alpn=xxx&congestion_controller=xxx&udp_relay_mode=xxx#别名
+// Construct a complete URI, format:
+// Tuic://uuid:password@host:port?sni=xxx&alpn=xxx&congestion_controller=xxx&udp_relay_mode=xxx#alias
         $uri = "tuic://{$uuid}:{$pass}@{$addr}:{$port}";
 
         if (!empty($query)) {

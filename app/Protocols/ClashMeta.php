@@ -272,7 +272,7 @@ class ClashMeta extends AbstractProtocol
             $pluginOpts = data_get($protocol_settings, 'plugin_opts', '');
             $array['plugin'] = $plugin;
 
-            // 解析插件选项
+// Parse plugin options
             $parsedOpts = collect(explode(';', $pluginOpts))
                 ->filter()
                 ->mapWithKeys(function ($pair) {
@@ -284,7 +284,7 @@ class ClashMeta extends AbstractProtocol
                 })
                 ->all();
 
-            // 根据插件类型进行字段映射
+// Map fields based on plugin type
             switch ($plugin) {
                 case 'obfs':
                 case 'obfs-local':
@@ -634,7 +634,7 @@ class ClashMeta extends AbstractProtocol
             case 1:
                 $array['type'] = 'hysteria';
                 $array['auth_str'] = $password;
-                $array['protocol'] = 'udp'; // 支持 udp/wechat-video/faketcp
+                $array['protocol'] = 'udp'; // Supports udp/wechat-video/faketcp
                 if (data_get($protocol_settings, 'obfs.open')) {
                     $array['obfs'] = data_get($protocol_settings, 'obfs.password');
                 }
@@ -724,7 +724,7 @@ class ClashMeta extends AbstractProtocol
             'transport' => strtoupper(data_get($protocol_settings, 'transport', 'TCP'))
         ];
 
-        // 如果配置了端口范围
+// If port range is configured
         if (isset($server['ports'])) {
             $array['port-range'] = $server['ports'];
         }
@@ -745,7 +745,7 @@ class ClashMeta extends AbstractProtocol
         $array['username'] = $password;
         $array['password'] = $password;
 
-        // TLS 配置
+// TLS configuration
         if (data_get($protocol_settings, 'tls')) {
             $array['tls'] = true;
             $array['skip-cert-verify'] = (bool) data_get($protocol_settings, 'tls_settings.allow_insecure', false);
@@ -766,7 +766,7 @@ class ClashMeta extends AbstractProtocol
         $array['username'] = $password;
         $array['password'] = $password;
 
-        // TLS 配置
+// TLS configuration
         if (data_get($protocol_settings, 'tls')) {
             $array['tls'] = true;
             $array['skip-cert-verify'] = (bool) data_get($protocol_settings, 'tls_settings.allow_insecure', false);

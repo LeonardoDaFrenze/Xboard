@@ -6,9 +6,9 @@ use Exception;
 
 class ApiException extends Exception
 {
-    protected $code; // 错误码
-    protected $message; // 错误消息
-    protected $errors; // 全部错误信息
+    protected $code; // Translation
+    protected $message; // Error Code
+    protected $errors; // All Error Information
 
     public function __construct($message = null, $code = 400, $errors = null)
     {

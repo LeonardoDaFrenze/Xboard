@@ -53,7 +53,7 @@ class ConfigController extends Controller
     {
         $hookUrl = $this->resolveTelegramWebhookUrl();
         if (blank($hookUrl)) {
-            return $this->fail([422, 'Telegram Webhook地址未配置']);
+            return $this->fail([422, 'Telegram Webhook address is not configured']);
         }
         $hookUrl .= '?' . http_build_query([
             'access_token' => md5(admin_setting('telegram_bot_token', $request->input('telegram_bot_token')))
@@ -81,9 +81,9 @@ class ConfigController extends Controller
     }
 
     /**
-     * 获取配置映射数据
+     * Fetch configuration mapping data
      * 
-     * @return array 配置映射数组
+     * @return array Configuration mapping array
      */
     private function getConfigMappings(): array
     {
@@ -191,7 +191,7 @@ class ConfigController extends Controller
                 'password_limit_enable' => (bool) admin_setting('password_limit_enable', 1),
                 'password_limit_count' => admin_setting('password_limit_count', 5),
                 'password_limit_expire' => admin_setting('password_limit_expire', 60),
-                // 保持向后兼容
+// Maintain backward compatibility
                 'recaptcha_enable' => (bool) admin_setting('captcha_enable', 0)
             ],
             'subscribe_template' => [
@@ -237,11 +237,11 @@ class ConfigController extends Controller
     }
 
     /**
-     * 格式化模板内容
+     * Format template content
      * 
-     * @param mixed $content 模板内容
-     * @param string $format 输出格式 (json|string)
-     * @return string 格式化后的内容
+     * @param mixed $content Template content
+     * @param string $format Output format (json|string)
+     * @return string Formatted content
      */
     private function formatTemplateContent(mixed $content, string $format = 'string'): string
     {

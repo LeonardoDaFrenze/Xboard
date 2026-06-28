@@ -16,7 +16,7 @@ class ServerService
 {
 
     /**
-     * 获取所有服务器列表
+     * Get all server list
      * @return Collection
      */
     public static function getAllServers(): Collection
@@ -37,7 +37,7 @@ class ServerService
     }
 
     /**
-     * 获取机器下所有已启用节点
+     * Get all enabled nodes under a machine
      */
     public static function getMachineNodes(ServerMachine $machine): Collection
     {
@@ -48,7 +48,7 @@ class ServerService
     }
 
     /**
-     * 获取指定用户可用的服务器列表
+     * Get the list of servers available to a specified user
      * @param User $user
      * @return array
      */
@@ -66,7 +66,7 @@ class ServerService
             ->append(['last_check_at', 'last_push_at', 'online', 'is_online', 'available_status', 'cache_key', 'server_key']);
 
         $servers = collect($servers)->map(function ($server) use ($user) {
-            // 判断动态端口
+// Determine dynamic port
             if (str_contains($server->port, '-')) {
                 $port = $server->port;
                 $server->port = (int) Helper::randomPort($port);
@@ -83,7 +83,7 @@ class ServerService
     }
 
     /**
-     * 根据权限组获取可用的用户列表
+     * Get the list of available users based on permission group
      * @param array $groupIds
      * @return Collection
      */
@@ -112,7 +112,7 @@ class ServerService
         return HookManager::filter('server.users.get', $users, $node);
     }
 
-    // 获取路由规则
+// Get routing rules
     public static function getRoutes(array $routeIds)
     {
         $routes = ServerRoute::select(['id', 'match', 'action', 'action_value'])->whereIn('id', $routeIds)->get();
@@ -120,7 +120,7 @@ class ServerService
     }
 
     /**
-     * 处理节点流量数据汇报
+     * Handle node traffic data report
      */
     public static function processTraffic(Server $node, array $traffic): void
     {
@@ -143,7 +143,7 @@ class ServerService
     }
 
     /**
-     * 处理节点在线设备汇报
+     * Handle node online device report
      */
     public static function processAlive(int $nodeId, array $alive): void
     {
@@ -154,7 +154,7 @@ class ServerService
     }
 
     /**
-     * 处理节点连接数汇报
+     * Handle node connection count report
      */
     public static function processOnline(Server $node, array $online): void
     {
@@ -169,7 +169,7 @@ class ServerService
     }
 
     /**
-     * 处理节点负载状态汇报
+     * Handle node load status report
      */
     public static function processStatus(Server $node, array $status): void
     {
@@ -202,7 +202,7 @@ class ServerService
     }
 
     /**
-     * 标记节点心跳
+     * Mark node heartbeat
      */
     public static function touchNode(Server $node): void
     {
@@ -398,7 +398,7 @@ class ServerService
     }
 
     /**
-     * 根据协议类型和标识获取服务器
+     * Get server based on protocol type and identifier
      * @param int $serverId
      * @param string $serverType
      * @return Server|null

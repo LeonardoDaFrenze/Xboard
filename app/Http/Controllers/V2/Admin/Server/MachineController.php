@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class MachineController extends Controller
 {
     /**
-     * 获取机器列表（附带关联节点数）
+     * Get machine list（Show associated node count）
      */
     public function fetch(Request $request)
     {
@@ -38,7 +38,7 @@ class MachineController extends Controller
     }
 
     /**
-     * 创建 / 更新机器
+     * Create / Update machine
      */
     public function save(Request $request)
     {
@@ -77,7 +77,7 @@ class MachineController extends Controller
     }
 
     /**
-     * 重置机器 Token
+     * Reset machine Token
      */
     public function resetToken(Request $request)
     {
@@ -93,7 +93,7 @@ class MachineController extends Controller
     }
 
     /**
-     * 获取机器 Token（仅展示一次，用于首次配置）
+     * Get machine Token（Display only once，For initial configuration）
      */
     public function getToken(Request $request)
     {
@@ -107,7 +107,7 @@ class MachineController extends Controller
     }
 
     /**
-     * 获取机器模式一键安装命令
+     * Get one-click installation command for machine mode
      */
     public function installCommand(Request $request)
     {
@@ -123,7 +123,7 @@ class MachineController extends Controller
     }
 
     /**
-     * 删除机器（自动解除关联节点）
+     * Delete machine（Automatically disassociate nodes）
      */
     public function drop(Request $request)
     {
@@ -145,7 +145,7 @@ class MachineController extends Controller
     }
 
     /**
-     * 获取机器下的节点列表
+     * Get list of nodes under the machine
      */
     public function nodes(Request $request)
     {
@@ -161,7 +161,7 @@ class MachineController extends Controller
     }
 
     /**
-     * 获取机器负载历史
+     * Get machine load history
      */
     public function history(Request $request)
     {

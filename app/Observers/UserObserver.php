@@ -46,7 +46,7 @@ class UserObserver
   }
 
   /**
-   * 根据当前用户状态重新计算 next_reset_at
+   * Recalculate based on the current user status next_reset_at
    */
   private function recalculateNextResetAt(User $user): void
   {

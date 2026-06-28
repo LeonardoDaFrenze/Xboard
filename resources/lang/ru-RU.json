@@ -91,7 +91,7 @@
     "Request failed, please try again later": "Ошибка запроса, попробуйте позже",
     "Register frequently, please try again after :minute minute": "Регистрация слишком частая, попробуйте через :minute минуту",
     "Uh-oh, we've had some problems, we're working on it.": "Ой, у нас возникли проблемы, мы работаем над этим",
-    "This subscription reset package does not apply to your subscription": "Этот пакет сброса не适用于 вашей подписки",
+    "This subscription reset package does not apply to your subscription": "This reset package is not applicable to your subscription.",
     "Login to :name": "Вход в :name",
     "Sending frequently, please try again later": "Отправка слишком частая, попробуйте позже",
     "Current product is sold out": "Товар распродан",

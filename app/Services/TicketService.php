@@ -42,11 +42,11 @@ class TicketService
     {
         $ticket = Ticket::where('id', $ticketId)->first();
         if (!$ticket) {
-            throw new ApiException('工单不存在');
+            throw new ApiException('Ticket does not exist');
         }
         $ticketMessage = $this->reply($ticket, $message, $userId);
         if (!$ticketMessage) {
-            throw new ApiException('工单回复失败');
+            throw new ApiException('Failed to reply to the ticket');
         }
         HookManager::call('ticket.reply.admin.after', [$ticket, $ticketMessage]);
         $this->sendEmailNotify($ticket, $ticketMessage);
@@ -58,7 +58,7 @@ class TicketService
             DB::beginTransaction();
             if (Ticket::where('status', 0)->where('user_id', $userId)->lockForUpdate()->first()) {
                 DB::rollBack();
-                throw new ApiException('存在未关闭的工单');
+                throw new ApiException('There are unclosed tickets');
             }
             $ticket = Ticket::create([
                 'user_id' => $userId,
@@ -68,7 +68,7 @@ class TicketService
                 'last_reply_user_id' => $userId,
             ]);
             if (!$ticket) {
-                throw new ApiException('工单创建失败');
+                throw new ApiException('Failed to create the ticket');
             }
             $ticketMessage = TicketMessage::create([
                 'user_id' => $userId,
@@ -77,7 +77,7 @@ class TicketService
             ]);
             if (!$ticketMessage) {
                 DB::rollBack();
-                throw new ApiException('工单消息创建失败');
+                throw new ApiException('Failed to create the ticket message');
             }
             DB::commit();
             return $ticket;
@@ -87,7 +87,7 @@ class TicketService
         }
     }
 
-    // 半小时内不再重复通知
+// Do not repeat notification within half an hour
     private function sendEmailNotify(Ticket $ticket, TicketMessage $ticketMessage)
     {
         $user = User::find($ticket->user_id);
@@ -96,12 +96,12 @@ class TicketService
             Cache::put($cacheKey, 1, 1800);
             SendEmailJob::dispatch([
                 'email' => $user->email,
-                'subject' => '您在' . admin_setting('app_name', 'XXXBoard') . '的工单得到了回复',
+                'subject' => 'Your ticket at' . admin_setting('app_name', 'XXXBoard') . 'has been replied to',
                 'template_name' => 'notify',
                 'template_value' => [
                     'name' => admin_setting('app_name', 'XXXBoard'),
                     'url' => admin_setting('app_url'),
-                    'content' => "主题：{$ticket->subject}\r\n回复内容：{$ticketMessage->message}"
+                    'content' => "Subject: {$ticket->subject}\r\nReply Content: {$ticketMessage->message}"
                 ]
             ]);
         }

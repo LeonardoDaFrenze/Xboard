@@ -27,7 +27,7 @@ class OctaneServiceProvider extends ServiceProvider
                 HookManager::reset();
             });
         }
-        // 每半钟执行一次调度检查
+// Execute the scheduling check every half hour
         Octane::tick('scheduler', function () {
             $lock = Cache::lock('scheduler-lock', 30);
 

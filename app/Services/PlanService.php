@@ -17,8 +17,8 @@ class PlanService
     }
 
     /**
-     * 获取所有可销售的订阅计划列表
-     * 条件：show 和 sell 为 true，且容量充足
+     * Get a list of all available subscription plans
+     * Conditions：show And sell Is true，And capacity is sufficient
      *
      * @return Collection
      */
@@ -34,8 +34,8 @@ class PlanService
     }
 
     /**
-     * 获取指定订阅计划的可用状态
-     * 条件：renew 和 sell 为 true
+     * Get the availability status of a specified subscription plan
+     * Conditions：renew And sell Is true
      *
      * @param int $planId
      * @return Plan|null
@@ -49,7 +49,7 @@ class PlanService
     }
 
     /**
-     * 检查指定计划是否可用于指定用户
+     * Check if a specific plan can be used for a specified user
      * 
      * @param Plan $plan
      * @param User $user
@@ -57,12 +57,12 @@ class PlanService
      */
     public function isPlanAvailableForUser(Plan $plan, User $user): bool
     {
-        // 如果是续费
+// If it's a renewal
         if ($user->plan_id === $plan->id) {
             return $plan->renew;
         }
 
-        // 如果是新购
+// If it's a new purchase
         return $plan->show && $plan->sell && $this->hasCapacity($plan);
     }
 
@@ -72,7 +72,7 @@ class PlanService
             throw new ApiException(__('Subscription plan does not exist'));
         }
 
-        // 转换周期格式为新版格式
+// Convert the cycle format to the new version format
         $periodKey = self::getPeriodKey($period);
         $price = $this->plan->prices[$periodKey] ?? null;
 
@@ -93,24 +93,24 @@ class PlanService
     }
 
     /**
-     * 智能转换周期格式为新版格式
-     * 如果是新版格式直接返回，如果是旧版格式则转换为新版格式
+     * Smartly convert the cycle format to the new version format
+     * If it's in the new version format, return directly，If it's in the old version format, convert it to the new version format
      *
      * @param string $period
      * @return string
      */
     public static function getPeriodKey(string $period): string
     {
-        // 如果是新版格式直接返回
+// If it's in the new version format, return directly
         if (in_array($period, self::getNewPeriods())) {
             return $period;
         }
 
-        // 如果是旧版格式则转换为新版格式
+// If it's in the old version format, convert it to the new version format
         return Plan::LEGACY_PERIOD_MAPPING[$period] ?? $period;
     }
     /**
-     * 只能转换周期格式为旧版本
+     * Can only convert the cycle format to the old version
      */
     public static function convertToLegacyPeriod(string $period): string
     {
@@ -119,7 +119,7 @@ class PlanService
     }
 
     /**
-     * 获取所有支持的新版周期格式
+     * Get all supported new cycle formats
      *
      * @return array
      */
@@ -129,7 +129,7 @@ class PlanService
     }
 
     /**
-     * 获取旧版周期格式
+     * Get the old cycle format
      *
      * @param string $period
      * @return string

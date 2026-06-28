@@ -16,47 +16,47 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * App\Models\Server
  *
  * @property int $id
- * @property string $name 节点名称
- * @property string $type 服务类型
- * @property string $host 主机地址
- * @property string|int $port 端口
- * @property int|null $server_port 服务器端口
- * @property array|null $group_ids 分组IDs
- * @property array|null $route_ids 路由IDs
- * @property array|null $tags 标签
- * @property boolean $show 是否显示
- * @property string|null $allow_insecure 是否允许不安全
- * @property string|null $network 网络类型
- * @property int|null $parent_id 父节点ID
- * @property float|null $rate 倍率
- * @property boolean $rate_time_enable 是否启用时间范围功能
- * @property array|null $rate_time_ranges 倍率时间范围
- * @property int|null $sort 排序
- * @property array|null $protocol_settings 协议设置
+ * @property string $name Node Name
+ * @property string $type Service Type
+ * @property string $host Host Address
+ * @property string|int $port Port
+ * @property int|null $server_port Server Port
+ * @property array|null $group_ids GroupIDs
+ * @property array|null $route_ids RouteIDs
+ * @property array|null $tags Label
+ * @property boolean $show Display
+ * @property string|null $allow_insecure Allow Insecure
+ * @property string|null $network Network Type
+ * @property int|null $parent_id Parent NodeID
+ * @property float|null $rate Ratio
+ * @property boolean $rate_time_enable Enable Time Range Function
+ * @property array|null $rate_time_ranges Ratio Time Range
+ * @property int|null $sort Sorting
+ * @property array|null $protocol_settings Protocol Settings
  * @property int $created_at
  * @property int $updated_at
  * 
- * @property-read Server|null $parent 父节点
- * @property-read \Illuminate\Database\Eloquent\Collection<int, StatServer> $stats 节点统计
+ * @property-read Server|null $parent Parent Node
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, StatServer> $stats Node Statistics
  * 
- * @property-read int|null $last_check_at 最后检查时间（Unix时间戳）
- * @property-read int|null $last_push_at 最后推送时间（Unix时间戳）
- * @property-read int $online 在线用户数
- * @property-read int $online_conn 在线连接数
- * @property-read array|null $metrics 节点指标指标
- * @property-read int $is_online 是否在线（1在线 0离线）
- * @property-read string $available_status 可用状态描述
- * @property-read string $cache_key 缓存键
- * @property string|null $ports 端口范围
- * @property string|null $password 密码
- * @property int|null $u 上行流量
- * @property int|null $d 下行流量
- * @property int|null $total 总流量
- * @property-read array|null $load_status 负载状态（包含CPU、内存、交换区、磁盘信息）
+ * @property-read int|null $last_check_at Last Check Time（UnixTimestamp）
+ * @property-read int|null $last_push_at Last Push Time（UnixTimestamp）
+ * @property-read int $online Online Users
+ * @property-read int $online_conn Online Connections
+ * @property-read array|null $metrics Node Metrics
+ * @property-read int $is_online Is Online（1Online 0Offline）
+ * @property-read string $available_status Availability Description
+ * @property-read string $cache_key Cache Key
+ * @property string|null $ports Port Range
+ * @property string|null $password Password
+ * @property int|null $u Upload Traffic
+ * @property int|null $d Download Traffic
+ * @property int|null $total Total Traffic
+ * @property-read array|null $load_status Load Status（IncludesCPU、Memory、Swap Space、Disk Information）
  * 
- * @property int $transfer_enable 流量上限，0或者null表示不限制
- * @property int $u 当前上传流量
- * @property int $d 当前下载流量
+ * @property int $transfer_enable Traffic Limit，0OrnullIndicates No Limit
+ * @property int $u Current Upload Traffic
+ * @property int $d Current Download Traffic
  */
 class Server extends Model
 {
@@ -246,8 +246,8 @@ class Server extends Model
                 'default' => null,
                 'fields' => [
                     'enabled' => ['type' => 'boolean', 'default' => false],
-                    'encryption' => ['type' => 'string', 'default' => null],  // 客户端公钥
-                    'decryption' => ['type' => 'string', 'default' => null],   // 服务端私钥
+                    'encryption' => ['type' => 'string', 'default' => null],  // Client Public Key
+                    'decryption' => ['type' => 'string', 'default' => null],   // Server Private Key
                 ]
             ],
             'network' => ['type' => 'string', 'default' => null],
@@ -441,7 +441,7 @@ class Server extends Model
     }
 
     /**
-     * 最后检查时间访问器
+     * Last Check Time Accessor
      */
     protected function lastCheckAt(): Attribute
     {
@@ -455,7 +455,7 @@ class Server extends Model
     }
 
     /**
-     * 最后推送时间访问器
+     * Last Push Time Accessor
      */
     protected function lastPushAt(): Attribute
     {
@@ -469,7 +469,7 @@ class Server extends Model
     }
 
     /**
-     * 在线用户数访问器
+     * Online Users Accessor
      */
     protected function online(): Attribute
     {
@@ -483,7 +483,7 @@ class Server extends Model
     }
 
     /**
-     * 是否在线访问器
+     * Is Online Accessor
      */
     protected function isOnline(): Attribute
     {
@@ -495,7 +495,7 @@ class Server extends Model
     }
 
     /**
-     * 缓存键访问器
+     * Cache Key Accessor
      */
     protected function cacheKey(): Attribute
     {
@@ -507,7 +507,7 @@ class Server extends Model
     }
 
     /**
-     * 服务器密钥访问器
+     * Server Key Accessor
      */
     protected function serverKey(): Attribute
     {
@@ -522,7 +522,7 @@ class Server extends Model
     }
 
     /**
-     * 指标指标访问器
+     * Metric Metrics Accessor
      */
     protected function metrics(): Attribute
     {
@@ -536,7 +536,7 @@ class Server extends Model
     }
 
     /**
-     * 在线连接数访问器
+     * Online Connections Accessor
      */
     protected function onlineConn(): Attribute
     {
@@ -548,7 +548,7 @@ class Server extends Model
     }
 
     /**
-     * 负载状态访问器
+     * Load Status Accessor
      */
     protected function loadStatus(): Attribute
     {

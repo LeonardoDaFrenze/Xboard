@@ -18,11 +18,11 @@ class Plugin extends AbstractPlugin
   protected TelegramService $telegramService;
 
   protected array $commandConfigs = [
-    '/start' => ['description' => '开始使用', 'handler' => 'handleStartCommand'],
-    '/bind' => ['description' => '绑定账号', 'handler' => 'handleBindCommand'],
-    '/traffic' => ['description' => '查看流量', 'handler' => 'handleTrafficCommand'],
-    '/getlatesturl' => ['description' => '获取订阅链接', 'handler' => 'handleGetLatestUrlCommand'],
-    '/unbind' => ['description' => '解绑账号', 'handler' => 'handleUnbindCommand'],
+    '/start' => ['description' => 'Start using', 'handler' => 'handleStartCommand'],
+    '/bind' => ['description' => 'Bind account', 'handler' => 'handleBindCommand'],
+    '/traffic' => ['description' => 'Check traffic', 'handler' => 'handleTrafficCommand'],
+    '/getlatesturl' => ['description' => 'Get subscription link', 'handler' => 'handleGetLatestUrlCommand'],
+    '/unbind' => ['description' => 'Unbind account', 'handler' => 'handleUnbindCommand'],
   ];
 
   public function boot(): void
@@ -47,16 +47,16 @@ class Plugin extends AbstractPlugin
 
     $payment = $order->payment;
     if (!$payment) {
-      Log::warning('支付通知失败：订单关联的支付方式不存在', ['order_id' => $order->id]);
+      Log::warning('Payment notification failed: The payment method associated with the order does not exist', ['order_id' => $order->id]);
       return;
     }
 
     $message = sprintf(
-      "💰成功收款%s元\n" .
+      "💰 Successfully received %s yuan\n" .
       "———————————————\n" .
-      "支付接口：%s\n" .
-      "支付渠道：%s\n" .
-      "本站订单：`%s`",
+      "Payment interface: %s\n" .
+      "Payment channel: %s\n" .
+      "Site order: `%s`",
       $order->total_amount / 100,
       Helper::escapeMarkdown($payment->payment),
       Helper::escapeMarkdown($payment->name),
@@ -80,31 +80,31 @@ class Plugin extends AbstractPlugin
     $remaining_traffic = $this->transferToGBString($user->transfer_enable - $user->u - $user->d);
     $u = $this->transferToGBString($user->u);
     $d = $this->transferToGBString($user->d);
-    $expired_at = $user->expired_at ? date('Y-m-d H:i:s', $user->expired_at) : '长期有效';
+    $expired_at = $user->expired_at ? date('Y-m-d H:i:s', $user->expired_at) : 'Long-term valid';
     $money = $user->balance / 100;
     $affmoney = $user->commission_balance / 100;
     $plan = $user->plan;
     $ip = request()?->ip() ?? '';
     $region = $ip ? (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? (new \Ip2Region())->simple($ip) : 'NULL') : '';
-    $TGmessage = "📮 *工单提醒* #{$ticket->id}\n";
+    $TGmessage = "📮 *Ticket reminder* #{$ticket->id}\n";
     $TGmessage .= "━━━━━━━━━━━━━━━━━━━━\n";
-    $TGmessage .= "📧 邮箱: `{$user->email}`\n";
-    $TGmessage .= "📍 位置: `{$region}`\n";
+    $TGmessage .= "📧 Email: `{$user->email}`\n";
+    $TGmessage .= "📍 Location: `{$region}`\n";
 
     if ($plan) {
-      $TGmessage .= "📦 套餐: `" . Helper::escapeMarkdown($plan->name) . "`\n";
-      $TGmessage .= "📊 流量: `{$remaining_traffic}G / {$transfer_enable}G` (剩余/总计)\n";
-      $TGmessage .= "⬆️⬇️ 已用: `{$u}G / {$d}G`\n";
-      $TGmessage .= "⏰ 到期: `{$expired_at}`\n";
+      $TGmessage .= "📦 Package: `" . Helper::escapeMarkdown($plan->name) . "`\n";
+      $TGmessage .= "📊 Traffic: `{$remaining_traffic}G / {$transfer_enable}G` (Remaining/Total)\n";
+      $TGmessage .= "⬆️⬇️ Used: `{$u}G / {$d}G`\n";
+      $TGmessage .= "⏰ Expiry: `{$expired_at}`\n";
     } else {
-      $TGmessage .= "📦 套餐: `未订购任何套餐`\n";
+      $TGmessage .= "📦 Package: `No package subscribed`\n";
     }
 
-    $TGmessage .= "💰 余额: `{$money}元`\n";
-    $TGmessage .= "💸 佣金: `{$affmoney}元`\n";
+    $TGmessage .= "💰 Balance: `{$money} yuan`\n";
+    $TGmessage .= "💸 Commission: `{$affmoney} yuan`\n";
     $TGmessage .= "━━━━━━━━━━━━━━━━━━━━\n";
-    $TGmessage .= "📝 *主题*: `" . Helper::escapeMarkdown($ticket->subject) . "`\n";
-    $TGmessage .= "💬 *内容*: `" . Helper::escapeMarkdown($message->message) . "`";
+    $TGmessage .= "📝 *Theme*: `" . Helper::escapeMarkdown($ticket->subject) . "`\n";
+    $TGmessage .= "💬 *Content*: `" . Helper::escapeMarkdown($message->message) . "`";
     $this->telegramService->sendMessageWithAdmin($TGmessage, true);
   }
 
@@ -114,7 +114,7 @@ class Plugin extends AbstractPlugin
       $this->registerTelegramCommand($command, [$this, $config['handler']]);
     }
 
-    $this->registerReplyHandler('/(📮.*?工单提醒.*?#?|工单ID: ?)(\\d+)/', [$this, 'handleTicketReply']);
+    $this->registerReplyHandler('/(📮.*?ticket reminder.*?#?|ticket ID: ?)(\\d+)/', [$this, 'handleTicketReply']);
   }
 
   public function registerTelegramCommand(string $command, callable $handler): void
@@ -128,7 +128,7 @@ class Plugin extends AbstractPlugin
   }
 
   /**
-   * 发送消息给用户
+   * Send message to user
    */
   protected function sendMessage(object $msg, string $message): void
   {
@@ -136,25 +136,25 @@ class Plugin extends AbstractPlugin
   }
 
   /**
-   * 检查是否为私聊
+   * Check if it's a private chat
    */
   protected function checkPrivateChat(object $msg): bool
   {
     if (!$msg->is_private) {
-      $this->sendMessage($msg, '请在私聊中使用此命令');
+      $this->sendMessage($msg, 'Please use this command in a private chat');
       return false;
     }
     return true;
   }
 
   /**
-   * 获取绑定的用户
+   * Get the bound user
    */
   protected function getBoundUser(object $msg): ?User
   {
     $user = User::where('telegram_id', $msg->chat_id)->first();
     if (!$user) {
-      $this->sendMessage($msg, '请先绑定账号');
+      $this->sendMessage($msg, 'Please bind an account first');
       return null;
     }
     return $user;
@@ -162,19 +162,19 @@ class Plugin extends AbstractPlugin
 
   public function handleStartCommand(object $msg): void
   {
-    $welcomeTitle = $this->getConfig('start_welcome_title', '🎉 欢迎使用 XBoard Telegram Bot！');
-    $botDescription = $this->getConfig('start_bot_description', '🤖 我是您的专属助手，可以帮助您：\\n• 绑定您的 XBoard 账号\\n• 查看流量使用情况\\n• 获取最新订阅链接\\n• 管理账号绑定状态');
-    $footer = $this->getConfig('start_footer', '💡 提示：所有命令都需要在私聊中使用');
+    $welcomeTitle = $this->getConfig('start_welcome_title', '🎉 Welcome to XBoard Telegram Bot!');
+    $botDescription = $this->getConfig('start_bot_description', '🤖 I am your personal assistant, and can help you with: \\n• Bind your XBoard account\\n• Check traffic usage\\n• Get the latest subscription link\\n• Manage account binding status');
+    $footer = $this->getConfig('start_footer', '💡 Tip: All commands need to be used in a private chat');
 
     $welcomeText = $welcomeTitle . "\n\n" . $botDescription . "\n\n";
 
     $user = User::where('telegram_id', $msg->chat_id)->first();
     if ($user) {
-      $welcomeText .= "✅ 您已绑定账号：{$user->email}\n\n";
-      $welcomeText .= $this->getConfig('start_unbind_guide', '📋 可用命令：\\n/traffic - 查看流量使用情况\\n/getlatesturl - 获取订阅链接\\n/unbind - 解绑账号');
+      $welcomeText .= "✅ You have bound an account: {$user->email}\n\n";
+      $welcomeText .= $this->getConfig('start_unbind_guide', '📋 Available commands: \\n/traffic - Check traffic usage\\n/getlatesturl - Get subscription link\\n/unbind - Unbind account');
     } else {
-      $welcomeText .= $this->getConfig('start_bind_guide', '🔗 请先绑定您的 XBoard 账号：\\n1. 登录您的 XBoard 账户\\n2. 复制您的订阅链接\\n3. 发送 /bind + 订阅链接') . "\n\n";
-      $welcomeText .= $this->getConfig('start_bind_commands', '📋 可用命令：\\n/bind [订阅链接] - 绑定账号');
+      $welcomeText .= $this->getConfig('start_bind_guide', '🔗 Please bind your XBoard account first: \\n1. Log in to your XBoard account\\n2. Copy your subscription link\\n3. Send /bind + subscription link') . "\n\n";
+      $welcomeText .= $this->getConfig('start_bind_commands', '📋 Available commands: \\n/bind [subscription link] - Bind account');
     }
 
     $welcomeText .= "\n\n" . $footer;
@@ -196,7 +196,7 @@ class Plugin extends AbstractPlugin
         default => false
       };
     } catch (\Exception $e) {
-      Log::error('Telegram 命令处理意外错误', [
+      Log::error('Telegram command processing unexpected error', [
         'command' => $msg->command ?? 'unknown',
         'chat_id' => $msg->chat_id ?? 'unknown',
         'error' => $e->getMessage(),
@@ -205,7 +205,7 @@ class Plugin extends AbstractPlugin
       ]);
 
       if (isset($msg->chat_id)) {
-        $this->telegramService->sendMessage($msg->chat_id, '系统繁忙，请稍后重试');
+        $this->telegramService->sendMessage($msg->chat_id, 'System busy, please try again later');
       }
 
       return true;
@@ -244,14 +244,14 @@ class Plugin extends AbstractPlugin
     if (!$msg->is_private || $msg->message_type !== 'message')
       return;
 
-    $helpText = $this->getConfig('help_text', '未知命令，请查看帮助');
+    $helpText = $this->getConfig('help_text', 'Unknown command, please check the help');
     $this->telegramService->sendMessage($msg->chat_id, $helpText);
   }
 
   public function handleError(array $data): void
   {
     list($msg, $e) = $data;
-    Log::error('Telegram 消息处理错误', [
+    Log::error('Telegram message processing error', [
       'chat_id' => $msg->chat_id ?? 'unknown',
       'command' => $msg->command ?? 'unknown',
       'message_type' => $msg->message_type ?? 'unknown',
@@ -269,35 +269,35 @@ class Plugin extends AbstractPlugin
 
     $subscribeUrl = $msg->args[0] ?? null;
     if (!$subscribeUrl) {
-      $this->sendMessage($msg, '参数有误，请携带订阅地址发送');
+      $this->sendMessage($msg, 'Incorrect parameters, please send with subscription address');
       return;
     }
 
     $token = $this->extractTokenFromUrl($subscribeUrl);
     if (!$token) {
-      $this->sendMessage($msg, '订阅地址无效');
+      $this->sendMessage($msg, 'Invalid subscription address');
       return;
     }
 
     $user = User::where('token', $token)->first();
     if (!$user) {
-      $this->sendMessage($msg, '用户不存在');
+      $this->sendMessage($msg, 'User does not exist');
       return;
     }
 
     if ($user->telegram_id) {
-      $this->sendMessage($msg, '该账号已经绑定了Telegram账号');
+      $this->sendMessage($msg, 'This account has already bound a Telegram account');
       return;
     }
 
     $user->telegram_id = $msg->chat_id;
     if (!$user->save()) {
-      $this->sendMessage($msg, '设置失败');
+      $this->sendMessage($msg, 'Setting failed');
       return;
     }
 
     HookManager::call('user.telegram.bind.after', [$user]);
-    $this->sendMessage($msg, '绑定成功');
+    $this->sendMessage($msg, 'Binding successful');
   }
 
   protected function extractTokenFromUrl(string $url): ?string
@@ -337,7 +337,7 @@ class Plugin extends AbstractPlugin
     $usagePercentage = $transferTotal > 0 ? ($transferUsed / $transferTotal) * 100 : 0;
 
     $text = sprintf(
-      "📊 流量使用情况\n\n已用流量：%sG\n总流量：%sG\n剩余流量：%sG\n使用率：%.2f%%",
+      "📊 Traffic usage\n\nUsed traffic: %sG\nTotal traffic: %sG\nRemaining traffic: %sG\nUsage rate: %.2f%%",
       $this->transferToGBString($transferUsed),
       $this->transferToGBString($transferTotal),
       $this->transferToGBString($transferRemaining),
@@ -359,7 +359,7 @@ class Plugin extends AbstractPlugin
     }
 
     $subscribeUrl = Helper::getSubscribeUrl($user->token);
-    $text = sprintf("🔗 您的订阅链接：\n\n%s", $subscribeUrl);
+    $text = sprintf("🔗 Your subscription link:\n\n%s", $subscribeUrl);
 
     $this->sendMessage($msg, $text);
   }
@@ -377,11 +377,11 @@ class Plugin extends AbstractPlugin
 
     $user->telegram_id = null;
     if (!$user->save()) {
-      $this->sendMessage($msg, '解绑失败');
+      $this->sendMessage($msg, 'Unbinding failed');
       return;
     }
 
-    $this->sendMessage($msg, '解绑成功');
+    $this->sendMessage($msg, 'Unbinding successful');
   }
 
   public function handleTicketReply(object $msg, array $matches): void

@@ -37,6 +37,9 @@ tools/__pycache__/
 tools/graph.json
 tools/.venv/
 
+__pycache__/
+translate.py
+
 # AI strategy — never in public git
 tools/
 docs/project_brain/

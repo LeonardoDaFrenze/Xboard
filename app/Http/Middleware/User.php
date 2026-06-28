@@ -20,10 +20,10 @@ class User
     public function handle($request, Closure $next)
     {
         if (!Auth::guard('sanctum')->check()) {
-            throw new ApiException('未登录或登陆已过期', 403);
+            throw new ApiException('Not logged in or login has expired', 403);
         }
         if (Auth::guard('sanctum')->user()->banned) {
-            throw new ApiException('您的账号已被封禁', 403);
+            throw new ApiException('Your account has been banned', 403);
         }
         return $next($request);
     }

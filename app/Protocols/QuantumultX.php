@@ -213,7 +213,7 @@ class QuantumultX extends AbstractProtocol
         ];
 
         // allow_insecure=false => tls-verification=true；
-        // allow_insecure=true 时不写，沿用 QX 默认 false
+// If allow_insecure=true is not specified, it will default to QX's default value of false.
         $allowInsecure = (bool) data_get($protocol_settings, 'tls.allow_insecure', false);
         if (!$allowInsecure) {
             $config[] = 'tls-verification=true';

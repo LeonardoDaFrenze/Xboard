@@ -427,7 +427,7 @@ class UpdateService
     protected function getLocalGitLogs(int $limit = 50): array
     {
         try {
-            // 获取本地git log
+// Get local git log
             $result = Process::run(
                 sprintf('git log -%d --pretty=format:"%%H||%%s||%%an||%%ai"', $limit)
             );

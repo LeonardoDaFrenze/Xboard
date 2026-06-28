@@ -82,9 +82,9 @@ dns:
 proxies:
 
 proxy-groups:
-  - { name: "$app_name", type: select, proxies: ["自动选择", "故障转移", "DIRECT"] }
-  - { name: "自动选择", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 300, tolerance: 50 }
-  - { name: "故障转移", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 300 }
+  - { name: "$app_name", type: select, proxies: ["Translation", "Automatic Selection", "DIRECT"] }
+  - { name: "Fault Tolerance", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 300, tolerance: 50 }
+  - { name: "Automatic Selection", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 300 }
 
 rules:
   # Custom

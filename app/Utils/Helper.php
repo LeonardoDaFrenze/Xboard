@@ -159,10 +159,10 @@ class Helper
     }
 
     /**
-     * 根据规则替换域名中对应的字符串
+     * Replace the corresponding string in the domain according to the rules.
      *
-     * @param string $input 用户输入的字符串
-     * @return string 替换后的字符串
+     * @param string $input The string input by the user.
+     * @return string The string after replacement.
      */
     public static function replaceByPattern($input)
     {
@@ -279,7 +279,7 @@ class Helper
     }
 
     /**
-     * 转义 Telegram Markdown 特殊字符
+     * Escape. Telegram Markdown Special character.
      * @param string $text
      * @return string
      */

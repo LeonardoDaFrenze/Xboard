@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>邮箱登录</title>
+<title>Email Login</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;padding:40px 20px;">
@@ -16,19 +16,19 @@
     <!-- Card -->
     <tr><td style="background:#ffffff;border-radius:12px;border:1px solid #e4e4e7;padding:40px;">
         <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="font-size:22px;font-weight:700;color:#18181b;padding-bottom:8px;">登录确认</td></tr>
-            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:28px;">点击下方按钮登录到 {{$name}}，链接有效期 5 分钟。如非本人操作，请忽略此邮件。</td></tr>
+            <tr><td style="font-size:22px;font-weight:700;color:#18181b;padding-bottom:8px;">Login Confirmation</td></tr>
+            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:28px;">Click the button below to log in to {{$name}}，Link Validity 5 Minutes。If not you operating，Please ignore this email。</td></tr>
             <tr><td align="center" style="padding-bottom:28px;">
-                <a href="{{$link}}" style="display:inline-block;background:#18181b;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:14px 36px;border-radius:8px;">确认登录</a>
+                <a href="{{$link}}" style="display:inline-block;background:#18181b;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:14px 36px;border-radius:8px;">Confirm Login</a>
             </td></tr>
-            <tr><td style="font-size:13px;color:#a1a1aa;line-height:1.5;">如果按钮无法点击，请复制以下链接到浏览器中打开：</td></tr>
+            <tr><td style="font-size:13px;color:#a1a1aa;line-height:1.5;">If the button cannot be clicked，Please copy the following link and open it in your browser：</td></tr>
             <tr><td style="font-size:13px;color:#71717a;line-height:1.5;word-break:break-all;padding-top:8px;">{{$link}}</td></tr>
         </table>
     </td></tr>
     <!-- Footer -->
     <tr><td style="padding-top:24px;text-align:center;">
         <a href="{{$url}}" style="font-size:13px;color:#a1a1aa;text-decoration:none;">{{$url}}</a>
-        <p style="font-size:12px;color:#d4d4d8;margin:8px 0 0;">此邮件由系统自动发送，请勿直接回复。</p>
+        <p style="font-size:12px;color:#d4d4d8;margin:8px 0 0;">This email is automatically sent by the system，Do not reply directly。</p>
     </td></tr>
 </table>
 </td></tr>

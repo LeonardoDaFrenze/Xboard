@@ -24,7 +24,7 @@ class PluginController extends Controller
     }
 
     /**
-     * 获取所有插件类型
+     * Get all plugin types
      */
     public function types()
     {
@@ -32,14 +32,14 @@ class PluginController extends Controller
             'data' => [
                 [
                     'value' => Plugin::TYPE_FEATURE,
-                    'label' => '功能',
-                    'description' => '提供功能扩展的插件，如Telegram登录、邮件通知等',
+                    'label' => 'Function',
+                    'description' => 'Plugins that provide function extensions, such as Telegram login and email notifications',
                     'icon' => '🔧'
                 ],
                 [
                     'value' => Plugin::TYPE_PAYMENT,
-                    'label' => '支付方式',
-                    'description' => '提供支付接口的插件，如支付宝、微信支付等',
+                    'label' => 'Payment method',
+                    'description' => 'Plugins that provide payment interfaces, such as Alipay and WeChat Pay',
                     'icon' => '💳'
                 ]
             ]
@@ -47,7 +47,7 @@ class PluginController extends Controller
     }
 
     /**
-     * 获取插件列表
+     * Get plugin list
      */
     public function index(Request $request)
     {
@@ -130,7 +130,7 @@ class PluginController extends Controller
     }
 
     /**
-     * 安装插件
+     * Install plugin
      */
     public function install(Request $request)
     {
@@ -141,17 +141,17 @@ class PluginController extends Controller
         try {
             $this->pluginManager->install($request->input('code'));
             return response()->json([
-                'message' => '插件安装成功'
+                'message' => 'Plugin installation successful'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => '插件安装失败：' . $e->getMessage()
+                'message' => 'Plugin installation failed:' . $e->getMessage()
             ], 400);
         }
     }
 
     /**
-     * 卸载插件
+     * Uninstall plugin
      */
     public function uninstall(Request $request)
     {
@@ -163,24 +163,24 @@ class PluginController extends Controller
         $plugin = Plugin::where('code', $code)->first();
         if ($plugin && $plugin->is_enabled) {
             return response()->json([
-                'message' => '请先禁用插件后再卸载'
+                'message' => 'Please disable the plugin before uninstalling'
             ], 400);
         }
 
         try {
             $this->pluginManager->uninstall($code);
             return response()->json([
-                'message' => '插件卸载成功'
+                'message' => 'Plugin uninstalled successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => '插件卸载失败：' . $e->getMessage()
+                'message' => 'Plugin uninstallation failed:' . $e->getMessage()
             ], 400);
         }
     }
 
     /**
-     * 升级插件
+     * Upgrade plugin
      */
     public function upgrade(Request $request)
     {
@@ -190,17 +190,17 @@ class PluginController extends Controller
         try {
             $this->pluginManager->update($request->input('code'));
             return response()->json([
-                'message' => '插件升级成功'
+                'message' => 'Plugin upgrade successful'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => '插件升级失败：' . $e->getMessage()
+                'message' => 'Plugin upgrade failed:' . $e->getMessage()
             ], 400);
         }
     }
 
     /**
-     * 启用插件
+     * Enable plugin
      */
     public function enable(Request $request)
     {
@@ -211,17 +211,17 @@ class PluginController extends Controller
         try {
             $this->pluginManager->enable($request->input('code'));
             return response()->json([
-                'message' => '插件启用成功'
+                'message' => 'Plugin enabled successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => '插件启用失败：' . $e->getMessage()
+                'message' => 'Plugin enabling failed:' . $e->getMessage()
             ], 400);
         }
     }
 
     /**
-     * 禁用插件
+     * Disable plugin
      */
     public function disable(Request $request)
     {
@@ -231,13 +231,13 @@ class PluginController extends Controller
 
         $this->pluginManager->disable($request->input('code'));
         return response()->json([
-            'message' => '插件禁用成功'
+            'message' => 'Plugin disabled successfully'
         ]);
 
     }
 
     /**
-     * 获取插件配置
+     * Get plugin configuration
      */
     public function getConfig(Request $request)
     {
@@ -252,13 +252,13 @@ class PluginController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => '获取配置失败：' . $e->getMessage()
+                'message' => 'Configuration retrieval failed:' . $e->getMessage()
             ], 400);
         }
     }
 
     /**
-     * 更新插件配置
+     * Update plugin configuration
      */
     public function updateConfig(Request $request)
     {
@@ -274,17 +274,17 @@ class PluginController extends Controller
             );
 
             return response()->json([
-                'message' => '配置更新成功'
+                'message' => 'Configuration update successful'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => '配置更新失败：' . $e->getMessage()
+                'message' => 'Configuration update failed:' . $e->getMessage()
             ], 400);
         }
     }
 
     /**
-     * 上传插件
+     * Upload plugin
      */
     public function upload(Request $request)
     {
@@ -293,29 +293,29 @@ class PluginController extends Controller
                 'required',
                 'file',
                 'mimes:zip',
-                'max:10240', // 最大10MB
+                'max:10240', // Maximum10MB
             ]
         ], [
-            'file.required' => '请选择插件包文件',
-            'file.file' => '无效的文件类型',
-            'file.mimes' => '插件包必须是zip格式',
-            'file.max' => '插件包大小不能超过10MB'
+            'file.required' => 'Please select a plugin package file',
+            'file.file' => 'Invalid file type',
+            'file.mimes' => 'The plugin package must be in zip format',
+            'file.max' => 'The size of the plugin package cannot exceed 10MB'
         ]);
 
         try {
             $this->pluginManager->upload($request->file('file'));
             return response()->json([
-                'message' => '插件上传成功'
+                'message' => 'Plugin uploaded successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => '插件上传失败：' . $e->getMessage()
+                'message' => 'Plugin upload failed:' . $e->getMessage()
             ], 400);
         }
     }
 
     /**
-     * 删除插件
+     * Delete plugin
      */
     public function delete(Request $request)
     {
@@ -325,21 +325,21 @@ class PluginController extends Controller
 
         $code = $request->input('code');
 
-        // 检查是否为核心插件
+// Check if it is a core plugin
         if ($this->pluginManager->isCorePlugin($code)) {
             return response()->json([
-                'message' => '该插件为系统核心插件，不允许删除'
+                'message' => 'This plugin is a system core plugin and cannot be deleted'
             ], 403);
         }
 
         try {
             $this->pluginManager->delete($code);
             return response()->json([
-                'message' => '插件删除成功'
+                'message' => 'Plugin deleted successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => '插件删除失败：' . $e->getMessage()
+                'message' => 'Plugin deletion failed:' . $e->getMessage()
             ], 400);
         }
     }

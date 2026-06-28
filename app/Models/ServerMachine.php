@@ -11,16 +11,16 @@ use Illuminate\Support\Str;
  * App\Models\ServerMachine
  *
  * @property int $id
- * @property string $name 机器名称
- * @property string $token 认证 Token
- * @property string|null $notes 备注
- * @property bool $is_active 是否启用
- * @property int|null $last_seen_at 最后心跳时间
- * @property array|null $load_status 负载状态
+ * @property string $name Machine Name
+ * @property string $token Authentication Token
+ * @property string|null $notes Remarks
+ * @property bool $is_active Enabled
+ * @property int|null $last_seen_at Last Heartbeat Time
+ * @property array|null $load_status Load Status
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  *
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Server> $servers 关联的节点
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Server> $servers Associated Nodes
  */
 class ServerMachine extends Model
 {
@@ -50,7 +50,7 @@ class ServerMachine extends Model
     }
 
     /**
-     * 生成新的随机 Token
+     * Generate New Random Token
      */
     public static function generateToken(): string
     {
@@ -58,7 +58,7 @@ class ServerMachine extends Model
     }
 
     /**
-     * 更新最后心跳时间
+     * Update Last Heartbeat Time
      */
     public function updateHeartbeat(): bool
     {

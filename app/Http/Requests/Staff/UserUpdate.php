@@ -32,25 +32,25 @@ class UserUpdate extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => '邮箱不能为空',
-            'email.email' => '邮箱格式不正确',
-            'transfer_enable.numeric' => '流量格式不正确',
-            'expired_at.integer' => '到期时间格式不正确',
-            'banned.required' => '是否封禁不能为空',
-            'banned.in' => '是否封禁格式不正确',
-            'plan_id.integer' => '订阅计划格式不正确',
-            'commission_rate.integer' => '推荐返利比例格式不正确',
-            'commission_rate.nullable' => '推荐返利比例格式不正确',
-            'commission_rate.min' => '推荐返利比例最小为0',
-            'commission_rate.max' => '推荐返利比例最大为100',
-            'discount.integer' => '专属折扣比例格式不正确',
-            'discount.nullable' => '专属折扣比例格式不正确',
-            'discount.min' => '专属折扣比例最小为0',
-            'discount.max' => '专属折扣比例最大为100',
-            'u.integer' => '上行流量格式不正确',
-            'd.integer' => '下行流量格式不正确',
-            'balance.integer' => '余额格式不正确',
-            'commission_balance.integer' => '佣金格式不正确'
+            'email.required' => 'Email cannot be empty',
+            'email.email' => 'Incorrect email format',
+            'transfer_enable.numeric' => 'Incorrect traffic format',
+            'expired_at.integer' => 'Incorrect expiration time format',
+            'banned.required' => 'Whether to ban cannot be empty',
+            'banned.in' => 'Incorrect format for whether to ban',
+            'plan_id.integer' => 'Incorrect subscription plan format',
+            'commission_rate.integer' => 'Incorrect recommended bonus ratio format',
+            'commission_rate.nullable' => 'Incorrect recommended bonus ratio format',
+            'commission_rate.min' => 'Recommended bonus ratio minimum is 0',
+            'commission_rate.max' => 'Recommended bonus ratio maximum is 100',
+            'discount.integer' => 'Exclusive discount ratio format incorrect',
+            'discount.nullable' => 'Exclusive discount ratio format incorrect',
+            'discount.min' => 'Exclusive discount ratio minimum is 0',
+            'discount.max' => 'Exclusive discount ratio maximum is 100',
+            'u.integer' => 'Incorrect upload traffic format',
+            'd.integer' => 'Incorrect download traffic format',
+            'balance.integer' => 'Incorrect balance format',
+            'commission_balance.integer' => 'Incorrect commission format'
         ];
     }
 }

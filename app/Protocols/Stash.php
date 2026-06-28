@@ -38,11 +38,11 @@ class Stash extends AbstractProtocol
         ],
         'stash' => [
             'anytls' => [
-                'base_version' => '3.3.0' // AnyTLS 协议在3.3.0版本中添加
+                'base_version' => '3.3.0' // AnyTLS The protocol added support for3.3.0in version
             ],
             'vless' => [
                 'protocol_settings.tls' => [
-                    '2' => '3.1.0'  // Reality 在3.1.0版本中添加
+                    '2' => '3.1.0'  // Reality on3.1.0.
                 ],
                 'protocol_settings.flow' => [
                     'xtls-rprx-vision' => '3.1.0',
@@ -52,18 +52,18 @@ class Stash extends AbstractProtocol
                 'base_version' => '2.0.0',
                 'protocol_settings.version' => [
                     '1' => '2.0.0', // Hysteria 1
-                    '2' => '2.5.0'  // Hysteria 2，2.5.0 版本开始支持（2023年11月8日）
+                    '2' => '2.5.0'  // Hysteria 2，2.5.0 started supporting（2023in year11month8day.）
                 ],
                 // 'protocol_settings.ports' => [
-                //     'true' => '2.6.4' // Hysteria 2 端口跳转功能于2.6.4版本支持（2024年8月4日）
+//     'true' => '2.6.4' // Hysteria 2 port redirection feature supported since version 2.6.4 (August 4, 2024)
                 // ]
             ],
             'tuic' => [
-                'base_version' => '2.3.0' // TUIC 协议自身需要 2.3.0+
+                'base_version' => '2.3.0' // TUIC The protocol itself requires 2.3.0+
             ],
             'shadowsocks' => [
                 'base_version' => '2.0.0',
-                // ShadowSocks2022 在3.0.0版本中添加（2025年4月2日）
+// ShadowSocks2022 added in version 3.0.0 (April 2, 2025)
                 'protocol_settings.cipher' => [
                     '2022-blake3-aes-128-gcm' => '3.0.0',
                     '2022-blake3-aes-256-gcm' => '3.0.0',
@@ -71,13 +71,13 @@ class Stash extends AbstractProtocol
                 ]
             ],
             'shadowtls' => [
-                'base_version' => '3.0.0' // ShadowTLS 在3.0.0版本中添加（2025年4月2日）
+                'base_version' => '3.0.0' // ShadowTLS in version3.0.0on（2025.4The protocol added support for2on）
             ],
             'ssh' => [
-                'base_version' => '2.6.4' // SSH 协议在2.6.4中添加（2024年8月4日）
+                'base_version' => '2.6.4' // SSH .2.6.4The protocol added support for（2024on8.4The protocol added support for）
             ],
             'juicity' => [
-                'base_version' => '2.6.4' // Juicity 协议在2.6.4中添加（2024年8月4日）
+                'base_version' => '2.6.4' // Juicity on2.6.4.（2024// Parsing plugin options8// Field mapping based on plugin type4// Optional path parameter）
             ]
         ]
     ];
@@ -194,7 +194,7 @@ class Stash extends AbstractProtocol
             $pluginOpts = data_get($protocol_settings, 'plugin_opts', '');
             $array['plugin'] = $plugin;
 
-            // 解析插件选项
+// For other plugins, directly use the parsed key-value pairs
             $parsedOpts = collect(explode(';', $pluginOpts))
                 ->filter()
                 ->mapWithKeys(function ($pair) {
@@ -206,7 +206,7 @@ class Stash extends AbstractProtocol
                 })
                 ->all();
 
-            // 根据插件类型进行字段映射
+// Map fields based on plugin type
             switch ($plugin) {
                 case 'obfs':
                     $array['plugin-opts'] = [
@@ -214,7 +214,7 @@ class Stash extends AbstractProtocol
                         'host' => $parsedOpts['obfs-host'],
                     ];
 
-                    // 可选path参数
+// Optional path parameter
                     if (isset($parsedOpts['path'])) {
                         $array['plugin-opts']['path'] = $parsedOpts['path'];
                     }
@@ -230,7 +230,7 @@ class Stash extends AbstractProtocol
                     break;
 
                 default:
-                    // 对于其他插件，直接使用解析出的键值对
+// For other plugins, directly use the parsed key-value pairs
                     $array['plugin-opts'] = $parsedOpts;
             }
         }

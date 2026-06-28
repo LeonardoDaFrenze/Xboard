@@ -53,7 +53,7 @@ class TicketController extends Controller
         $ticket = Ticket::with('messages', 'user')->find($request->input('id'));
 
         if (!$ticket) {
-            return $this->fail([400202, '工单不存在']);
+            return $this->fail([400202, 'The work order does not exist.']);
         }
         $ticket->messages->each(fn($msg) => $msg->setRelation('ticket', $ticket));
         $result = $ticket->toArray();
@@ -90,7 +90,7 @@ class TicketController extends Controller
                 page: $request->integer('current', 1)
             );
 
-        // 获取items然后映射转换
+// Get items and then map and transform
         $items = collect($tickets->items())->map(function ($ticket) {
             $ticketData = $ticket->toArray();
             $ticketData['user'] = UserController::transformUserData($ticket->user);
@@ -109,8 +109,8 @@ class TicketController extends Controller
             'id' => 'required|numeric',
             'message' => 'required|string'
         ], [
-            'id.required' => '工单ID不能为空',
-            'message.required' => '消息不能为空'
+            'id.required' => 'The work order ID cannot be empty.',
+            'message.required' => 'The message cannot be empty.'
         ]);
         $ticketService = new TicketService();
         $ticketService->replyByAdmin(
@@ -126,7 +126,7 @@ class TicketController extends Controller
         $request->validate([
             'id' => 'required|numeric'
         ], [
-            'id.required' => '工单ID不能为空'
+            'id.required' => 'The work order ID cannot be empty.'
         ]);
         try {
             $ticket = Ticket::findOrFail($request->input('id'));
@@ -134,9 +134,9 @@ class TicketController extends Controller
             $ticket->save();
             return $this->success(true);
         } catch (ModelNotFoundException $e) {
-            return $this->fail([400202, '工单不存在']);
+            return $this->fail([400202, 'The work order does not exist.']);
         } catch (\Exception $e) {
-            return $this->fail([500101, '关闭失败']);
+            return $this->fail([500101, 'Failed to close']);
         }
     }
 

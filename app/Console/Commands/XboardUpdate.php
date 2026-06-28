@@ -22,7 +22,7 @@ class XboardUpdate extends Command
      *
      * @var string
      */
-    protected $description = 'xboard 更新';
+    protected $description = 'XBoard Update';
 
     /**
      * Create a new command instance.
@@ -41,12 +41,12 @@ class XboardUpdate extends Command
      */
     public function handle()
     {
-        $this->info('正在导入数据库请稍等...');
+        $this->info('Please wait while the database is being imported...');
         Artisan::call("migrate", ['--force' => true]);
         $this->info(Artisan::output());
-        $this->info('正在检查并安装默认插件...');
+        $this->info('Checking and installing default plugins...');
         app(PluginManager::class)->installDefaultPlugins();
-        $this->info('默认插件检查完成');
+        $this->info('Default plugin check completed');
         $updateService = new UpdateService();
         $updateService->updateVersionCache();
         $themeService = app(ThemeService::class);
@@ -60,6 +60,6 @@ class XboardUpdate extends Command
                 $this->warn('horizon:terminate skipped: ' . $e->getMessage());
             }
         }
-        $this->info('更新完毕，队列服务已重启，你无需进行任何操作。');
+        $this->info('Update complete, queue service has been restarted. No further action required.');
     }
 }

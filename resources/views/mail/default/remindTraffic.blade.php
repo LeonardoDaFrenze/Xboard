@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>流量提醒</title>
+<title>Traffic Reminder</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;padding:40px 20px;">
@@ -16,18 +16,18 @@
     <!-- Card -->
     <tr><td style="background:#ffffff;border-radius:12px;border:1px solid #e4e4e7;padding:40px;">
         <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="font-size:22px;font-weight:700;color:#18181b;padding-bottom:8px;">流量使用提醒</td></tr>
-            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:12px;">您本月的套餐流量已使用 <strong style="color:#18181b;">80%</strong>。</td></tr>
-            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:28px;">请合理安排使用，避免提前耗尽。如需更多流量，可前往面板升级套餐。</td></tr>
+            <tr><td style="font-size:22px;font-weight:700;color:#18181b;padding-bottom:8px;">Traffic Usage Reminder</td></tr>
+            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:12px;">Your monthly package traffic has been used up. <strong style="color:#18181b;">80%</strong>。</td></tr>
+            <tr><td style="font-size:15px;color:#52525b;line-height:1.7;padding-bottom:28px;">Please arrange your usage reasonably.，Avoid running out of traffic in advance.。If you need more traffic,，You can upgrade your package from the panel.。</td></tr>
             <tr><td align="center">
-                <a href="{{$url}}" style="display:inline-block;background:#18181b;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 28px;border-radius:8px;">查看用量</a>
+                <a href="{{$url}}" style="display:inline-block;background:#18181b;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 28px;border-radius:8px;">Check your usage.</a>
             </td></tr>
         </table>
     </td></tr>
     <!-- Footer -->
     <tr><td style="padding-top:24px;text-align:center;">
         <a href="{{$url}}" style="font-size:13px;color:#a1a1aa;text-decoration:none;">{{$url}}</a>
-        <p style="font-size:12px;color:#d4d4d8;margin:8px 0 0;">此邮件由系统自动发送，请勿直接回复。</p>
+        <p style="font-size:12px;color:#d4d4d8;margin:8px 0 0;">This email is automatically sent by the system.，Please do not reply directly.。</p>
     </td></tr>
 </table>
 </td></tr>

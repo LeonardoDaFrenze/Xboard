@@ -9,17 +9,17 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * 优惠券资源类
+ * Coupon resource class
  *
- * @property array|null $limit_plan_ids 限制可用的套餐ID列表
+ * @property array|null $limit_plan_ids Limit available packagesIDList
  */
 class CouponResource extends JsonResource
 {
     /**
-     * 将资源转换为数组
+     * Convert resources to array
      *
-     * @param Request $request 请求实例
-     * @return array<string, mixed> 转换后的数组
+     * @param Request $request Request instance
+     * @return array<string, mixed> Converted array
      */
     public function toArray(Request $request): array
     {

@@ -5,21 +5,21 @@ namespace App\Http\Controllers;
 use App\Traits\HasPluginConfig;
 
 /**
- * 插件控制器基类
+ * Plugin Controller Base Class
  * 
- * 为所有插件控制器提供通用功能
+ * Provides common functionality for all plugin controllers
  */
 abstract class PluginController extends Controller
 {
     use HasPluginConfig;
 
     /**
-     * 执行插件操作前的检查
+     * Executes checks before performing plugin operations
      */
     protected function beforePluginAction(): ?array
     {
         if (!$this->isPluginEnabled()) {
-            return [400, '插件未启用'];
+            return [400, 'Plugin is not enabled'];
         }
         return null;
     }

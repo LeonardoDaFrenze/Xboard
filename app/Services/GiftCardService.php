@@ -22,13 +22,13 @@ class GiftCardService
     public function __construct(string $code)
     {
         $this->code = GiftCardCode::where('code', $code)->first()
-            ?? throw new ApiException('兑换码不存在');
+            ?? throw new ApiException('The redemption code does not exist.');
 
         $this->template = $this->code->template;
     }
 
     /**
-     * 设置使用用户
+     * Set the user to use.
      */
     public function setUser(User $user): self
     {
@@ -37,7 +37,7 @@ class GiftCardService
     }
 
     /**
-     * 验证兑换码
+     * Verify the redemption code.
      */
     public function validate(): self
     {
@@ -52,44 +52,44 @@ class GiftCardService
     }
 
     /**
-     * 验证礼品卡本身是否可用 (不检查用户条件)
+     * Verify if the gift card itself is usable. (Do not check user conditions.)
      * @throws ApiException
      */
     public function validateIsActive(): self
     {
         if (!$this->template->isAvailable()) {
-            throw new ApiException('该礼品卡类型已停用');
+            throw new ApiException('This type of gift card has been disabled.');
         }
 
         if (!$this->code->isAvailable()) {
-            throw new ApiException('兑换码不可用：' . $this->code->status_name);
+            throw new ApiException('Redemption code unavailable:' . $this->code->status_name);
         }
         return $this;
     }
 
     /**
-     * 检查用户是否满足兑换条件 (不抛出异常)
+     * Check if the user meets the redemption conditions. (Do not throw an exception.)
      */
     public function checkUserEligibility(): array
     {
         if (!$this->user) {
             return [
                 'can_redeem' => false,
-                'reason' => '用户信息未提供'
+                'reason' => 'User information not provided.'
             ];
         }
 
         if (!$this->template->checkUserConditions($this->user)) {
             return [
                 'can_redeem' => false,
-                'reason' => '您不满足此礼品卡的使用条件'
+                'reason' => 'You do not meet the usage conditions for this gift card.'
             ];
         }
 
         if (!$this->template->checkUsageLimit($this->user)) {
             return [
                 'can_redeem' => false,
-                'reason' => '您已达到此礼品卡的使用限制'
+                'reason' => 'You have reached the usage limit for this gift card.'
             ];
         }
 
@@ -97,12 +97,12 @@ class GiftCardService
     }
 
     /**
-     * 使用礼品卡
+     * Use Gift Card
      */
     public function redeem(array $options = []): array
     {
         if (!$this->user) {
-            throw new ApiException('未设置使用用户');
+            throw new ApiException('No user set for use');
         }
 
         return DB::transaction(function () use ($options) {
@@ -141,7 +141,7 @@ class GiftCardService
     }
 
     /**
-     * 发放奖励
+     * Distribute Reward
      */
     protected function giveRewards(array $rewards): void
     {
@@ -149,7 +149,7 @@ class GiftCardService
 
         if (isset($rewards['balance']) && $rewards['balance'] > 0) {
             if (!$userService->addBalance($this->user->id, $rewards['balance'])) {
-                throw new ApiException('余额发放失败');
+                throw new ApiException('Balance distribution failed');
             }
         }
 
@@ -177,20 +177,20 @@ class GiftCardService
                 );
             }
         } else {
-            // 只有在不是套餐卡的情况下，才处理独立的有效期奖励
+// Only process independent validity rewards if it's not a package card
             if (isset($rewards['expire_days']) && $rewards['expire_days'] > 0) {
                 $userService->extendSubscription($this->user, $rewards['expire_days']);
             }
         }
 
-        // 保存用户更改
+// Save user changes
         if (!$this->user->save()) {
-            throw new ApiException('用户信息更新失败');
+            throw new ApiException('User information update failed');
         }
     }
 
     /**
-     * 发放邀请人奖励
+     * Distribute Referrer Reward
      */
     protected function giveInviteRewards(array $rewards): ?array
     {
@@ -208,7 +208,7 @@ class GiftCardService
 
         $userService = app(UserService::class);
 
-        // 邀请人余额奖励
+// Referrer balance reward
         if (isset($rewards['balance']) && $rewards['balance'] > 0) {
             $inviteBalance = intval($rewards['balance'] * $rate);
             if ($inviteBalance > 0) {
@@ -217,7 +217,7 @@ class GiftCardService
             }
         }
 
-        // 邀请人流量奖励
+// Referrer traffic reward
         if (isset($rewards['transfer_enable']) && $rewards['transfer_enable'] > 0) {
             $inviteTransfer = intval($rewards['transfer_enable'] * $rate);
             if ($inviteTransfer > 0) {
@@ -231,7 +231,7 @@ class GiftCardService
     }
 
     /**
-     * 计算倍率
+     * Calculate Ratio
      */
     protected function calculateMultiplier(): float
     {
@@ -239,7 +239,7 @@ class GiftCardService
     }
 
     /**
-     * 获取节日加成倍率
+     * Get Festival Bonus Ratio
      */
     private function getFestivalBonus(): float
     {
@@ -258,7 +258,7 @@ class GiftCardService
     }
 
     /**
-     * 获取兑换码信息（不包含敏感信息）
+     * Get Redemption Code Information（Does not contain sensitive information）
      */
     public function getCodeInfo(): array
     {
@@ -289,19 +289,19 @@ class GiftCardService
     }
 
     /**
-     * 预览奖励（不实际发放）
+     * Preview Reward（Not actually distributed）
      */
     public function previewRewards(): array
     {
         if (!$this->user) {
-            throw new ApiException('未设置使用用户');
+            throw new ApiException('No user set for use');
         }
 
         return $this->template->calculateActualRewards($this->user);
     }
 
     /**
-     * 获取兑换码
+     * Get Redemption Code
      */
     public function getCode(): GiftCardCode
     {
@@ -309,7 +309,7 @@ class GiftCardService
     }
 
     /**
-     * 获取模板
+     * Get Template
      */
     public function getTemplate(): GiftCardTemplate
     {
@@ -317,11 +317,11 @@ class GiftCardService
     }
 
     /**
-     * 记录日志
+     * Record Log
      */
     protected function logUsage(string $action, array $data = []): void
     {
-        Log::info('礼品卡使用记录', [
+        Log::info('Gift Card Usage Records', [
             'action' => $action,
             'code' => $this->code->code,
             'template_id' => $this->template->id,

@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Log;
 
 class ResetTraffic extends Command
 {
-  protected $signature = 'reset:traffic {--fix-null : 修正模式，重新计算next_reset_at为null的用户} {--force : 强制模式，重新计算所有用户的重置时间}';
+  protected $signature = 'reset:traffic {--fix-null : Fix mode, recalculate next_reset_at for users with null} {--force : Force mode, recalculate reset time for all users}';
 
-  protected $description = '流量重置 - 处理所有需要重置的用户';
+  protected $description = 'Traffic Reset - Processing all users that need to be reset';
 
   public function __construct(
     private readonly TrafficResetService $trafficResetService
@@ -25,12 +25,12 @@ class ResetTraffic extends Command
     $fixNull = $this->option('fix-null');
     $force = $this->option('force');
 
-    $this->info('🚀 开始执行流量重置任务...');
+    $this->info('🚀 Starting the traffic reset task...');
 
     if ($fixNull) {
-      $this->warn('🔧 修正模式 - 将重新计算next_reset_at为null的用户');
+      $this->warn('🔧 Fix mode - Recalculating next_reset_at for users with null');
     } elseif ($force) {
-      $this->warn('⚡ 强制模式 - 将重新计算所有用户的重置时间');
+      $this->warn('⚡ Force mode - Recalculating reset time for all users');
     }
 
     try {
@@ -39,9 +39,9 @@ class ResetTraffic extends Command
       return self::SUCCESS;
 
     } catch (\Exception $e) {
-      $this->error("❌ 任务执行失败: {$e->getMessage()}");
+      $this->error("❌ Task execution failed: {$e->getMessage()}");
 
-      Log::error('流量重置命令执行失败', [
+      Log::error('Traffic reset command execution failed', [
         'error' => $e->getMessage(),
         'trace' => $e->getTraceAsString(),
       ]);
@@ -52,7 +52,7 @@ class ResetTraffic extends Command
 
   private function displayResults(array $result, bool $isSpecialMode): void
   {
-    $this->info("✅ 任务完成！\n");
+    $this->info("✅ Task completed!\n");
 
     if ($isSpecialMode) {
       $this->displayFixResults($result);
@@ -63,21 +63,21 @@ class ResetTraffic extends Command
 
   private function displayFixResults(array $result): void
   {
-    $this->info("📊 修正结果统计:");
-    $this->info("🔍 发现用户总数: {$result['total_found']}");
-    $this->info("✅ 成功修正数量: {$result['total_fixed']}");
-    $this->info("⏱️  总执行时间: {$result['duration']} 秒");
+    $this->info("📊 Fix result statistics:");
+    $this->info("🔍 Total users found: {$result['total_found']}");
+    $this->info("✅ Successful fix count: {$result['total_fixed']}");
+    $this->info("⏱️ Total execution time: {$result['duration']} seconds");
 
     if ($result['error_count'] > 0) {
-      $this->warn("⚠️  错误数量: {$result['error_count']}");
-      $this->warn("详细错误信息请查看日志");
+      $this->warn("⚠️ Error count: {$result['error_count']}");
+      $this->warn("Detailed error information can be found in the logs");
     } else {
-      $this->info("✨ 无错误发生");
+      $this->info("✨ No errors occurred");
     }
 
     if ($result['total_found'] > 0) {
       $avgTime = round($result['duration'] / $result['total_found'], 4);
-      $this->info("⚡ 平均处理速度: {$avgTime} 秒/用户");
+      $this->info("⚡ Average processing speed: {$avgTime} seconds/user");
     }
   }
 
@@ -85,21 +85,21 @@ class ResetTraffic extends Command
 
   private function displayExecutionResults(array $result): void
   {
-    $this->info("📊 执行结果统计:");
-    $this->info("👥 处理用户总数: {$result['total_processed']}");
-    $this->info("🔄 重置用户数量: {$result['total_reset']}");
-    $this->info("⏱️  总执行时间: {$result['duration']} 秒");
+    $this->info("📊 Execution result statistics:");
+    $this->info("👥 Total users processed: {$result['total_processed']}");
+    $this->info("🔄 Number of reset users: {$result['total_reset']}");
+    $this->info("⏱️ Total execution time: {$result['duration']} seconds");
 
     if ($result['error_count'] > 0) {
-      $this->warn("⚠️  错误数量: {$result['error_count']}");
-      $this->warn("详细错误信息请查看日志");
+      $this->warn("⚠️ Error count: {$result['error_count']}");
+      $this->warn("Detailed error information can be found in the logs");
     } else {
-      $this->info("✨ 无错误发生");
+      $this->info("✨ No errors occurred");
     }
 
     if ($result['total_processed'] > 0) {
       $avgTime = round($result['duration'] / $result['total_processed'], 4);
-      $this->info("⚡ 平均处理速度: {$avgTime} 秒/用户");
+      $this->info("⚡ Average processing speed: {$avgTime} seconds/user");
     }
   }
 
@@ -112,7 +112,7 @@ class ResetTraffic extends Command
     $users = $this->getResetQuery()->get();
 
     if ($users->isEmpty()) {
-      $this->info("😴 当前没有需要重置的用户");
+      $this->info("😴 No users need to be reset at the moment");
       return [
         'total_processed' => 0,
         'total_reset' => 0,
@@ -121,7 +121,7 @@ class ResetTraffic extends Command
       ];
     }
 
-    $this->info("找到 {$users->count()} 个需要重置的用户");
+    $this->info("Found {$users->count()} users that need to be reset");
 
     foreach ($users as $user) {
       try {
@@ -132,7 +132,7 @@ class ResetTraffic extends Command
           'email' => $user->email,
           'error' => $e->getMessage(),
         ];
-        Log::error('用户流量重置失败', [
+        Log::error('User traffic reset failed', [
           'user_id' => $user->id,
           'error' => $e->getMessage(),
         ]);
@@ -153,7 +153,7 @@ class ResetTraffic extends Command
     $nullUsers = $this->getNullResetTimeUsers();
 
     if ($nullUsers->isEmpty()) {
-      $this->info("✅ 没有发现next_reset_at为null的用户");
+      $this->info("✅ No users with null next_reset_at were found");
       return [
         'total_found' => 0,
         'total_fixed' => 0,
@@ -162,7 +162,7 @@ class ResetTraffic extends Command
       ];
     }
 
-    $this->info("🔧 发现 {$nullUsers->count()} 个next_reset_at为null的用户，开始修正...");
+    $this->info("🔧 Found {$nullUsers->count()} users with null next_reset_at, starting fix...");
 
     $fixedCount = 0;
     $errors = [];
@@ -181,7 +181,7 @@ class ResetTraffic extends Command
           'email' => $user->email,
           'error' => $e->getMessage(),
         ];
-        Log::error('修正用户next_reset_at失败', [
+        Log::error('Fixing user next_reset_at failed', [
           'user_id' => $user->id,
           'error' => $e->getMessage(),
         ]);
@@ -202,7 +202,7 @@ class ResetTraffic extends Command
     $allUsers = $this->getAllUsers();
 
     if ($allUsers->isEmpty()) {
-      $this->info("✅ 没有发现需要处理的用户");
+      $this->info("✅ No users to process were found");
       return [
         'total_found' => 0,
         'total_fixed' => 0,
@@ -211,7 +211,7 @@ class ResetTraffic extends Command
       ];
     }
 
-    $this->info("⚡ 发现 {$allUsers->count()} 个用户，开始重新计算重置时间...");
+    $this->info("⚡ Found {$allUsers->count()} users, starting recalculation of reset time...");
 
     $fixedCount = 0;
     $errors = [];
@@ -230,7 +230,7 @@ class ResetTraffic extends Command
           'email' => $user->email,
           'error' => $e->getMessage(),
         ];
-        Log::error('强制重新计算用户next_reset_at失败', [
+        Log::error('Forced recalculation of user next_reset_at failed', [
           'user_id' => $user->id,
           'error' => $e->getMessage(),
         ]);

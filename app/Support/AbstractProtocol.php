@@ -7,53 +7,53 @@ use App\Services\Plugin\HookManager;
 abstract class AbstractProtocol
 {
     /**
-     * @var array 用户信息
+     * @var array User Information
      */
     protected $user;
 
     /**
-     * @var array 服务器信息
+     * @var array Server Information
      */
     protected $servers;
 
     /**
-     * @var string|null 客户端名称
+     * @var string|null Client Name
      */
     protected $clientName;
 
     /**
-     * @var string|null 客户端版本
+     * @var string|null Client Version
      */
     protected $clientVersion;
 
     /**
-     * @var string|null 原始 User-Agent
+     * @var string|null Original User-Agent
      */
     protected $userAgent;
 
     /**
-     * @var array 协议标识
+     * @var array Protocol Identifier
      */
     public $flags = [];
 
     /**
-     * @var array 协议需求配置
+     * @var array Protocol Requirement Configuration
      */
     protected $protocolRequirements = [];
 
     /**
-     * @var array 允许的协议类型（白名单） 为空则不进行过滤
+     * @var array Allowed Protocol Types（Whitelist） If empty, no filtering will be performed
      */
     protected $allowedProtocols = [];
 
     /**
-     * 构造函数
+     * Constructor
      *
-     * @param array $user 用户信息
-     * @param array $servers 服务器信息
-     * @param string|null $clientName 客户端名称
-     * @param string|null $clientVersion 客户端版本
-     * @param string|null $userAgent 原始 User-Agent
+     * @param array $user User Information
+     * @param array $servers Server Information
+     * @param string|null $clientName Client Name
+     * @param string|null $clientVersion Client Version
+     * @param string|null $userAgent Original User-Agent
      */
     public function __construct($user, $servers, $clientName = null, $clientVersion = null, $userAgent = null)
     {
@@ -67,7 +67,7 @@ abstract class AbstractProtocol
     }
 
     /**
-     * 获取协议标识
+     * Get Protocol Identifier
      *
      * @return array
      */
@@ -77,14 +77,14 @@ abstract class AbstractProtocol
     }
 
     /**
-     * 处理请求
+     * Handle Request
      *
      * @return mixed
      */
     abstract public function handle();
 
     /**
-     * 根据客户端版本过滤不兼容的服务器
+     * Filter incompatible servers based on client version
      *
      * @return array
      */
@@ -109,9 +109,9 @@ abstract class AbstractProtocol
     }
 
     /**
-     * 检查服务器是否与当前客户端兼容
+     * Check if the server is compatible with the current client
      *
-     * @param array $server 服务器信息
+     * @param array $server Server Information
      * @return bool
      */
     protected function isCompatible($server)
@@ -133,10 +133,10 @@ abstract class AbstractProtocol
     }
 
     /**
-     * 检查版本要求
+     * Check version requirements
      *
-     * @param array $requirements 要求配置
-     * @param array $server 服务器信息
+     * @param array $requirements Required Configuration
+     * @param array $server Server Information
      * @return bool
      */
     private function checkRequirements(array $requirements, array $server): bool
@@ -195,26 +195,26 @@ abstract class AbstractProtocol
     }
 
     /**
-     * 检查当前客户端是否支持特定功能
+     * Check if the current client supports a specific feature
      *
-     * @param string $clientName 客户端名称
-     * @param string $minVersion 最低版本要求
-     * @param array $additionalConditions 额外条件检查
+     * @param string $clientName Client Name
+     * @param string $minVersion Minimum Version Requirement
+     * @param array $additionalConditions Additional Condition Check
      * @return bool
      */
     protected function supportsFeature(string $clientName, string $minVersion, array $additionalConditions = []): bool
     {
-        // 检查客户端名称
+// Check client name
         if ($this->clientName !== $clientName) {
             return false;
         }
 
-        // 检查版本号
+// Check version number
         if (empty($this->clientVersion) || version_compare($this->clientVersion, $minVersion, '<')) {
             return false;
         }
 
-        // 检查额外条件
+// Check additional conditions
         foreach ($additionalConditions as $condition) {
             if (!$condition) {
                 return false;
@@ -225,7 +225,7 @@ abstract class AbstractProtocol
     }
 
     /**
-     * 根据白名单过滤服务器
+     * Filter servers based on whitelist
      *
      * @return void
      */
@@ -240,10 +240,10 @@ abstract class AbstractProtocol
     }
 
     /**
-     * 将平铺的协议需求转换为树形结构
+     * Convert flat protocol requirements to tree structure
      *
-     * @param array $flat 平铺的协议需求
-     * @return array 树形结构的协议需求
+     * @param array $flat Flat Protocol Requirements
+     * @return array Tree Structure Protocol Requirements
      */
     protected function normalizeProtocolRequirements(array $flat): array
     {

@@ -4,48 +4,48 @@ namespace App\Utils;
 
 class CacheKey
 {
-    // 核心缓存键定义
+// Core cache key definitions
     const CORE_KEYS = [
-        'EMAIL_VERIFY_CODE' => '邮箱验证码',
-        'LAST_SEND_EMAIL_VERIFY_TIMESTAMP' => '最后一次发送邮箱验证码时间',
-        'TEMP_TOKEN' => '临时令牌',
-        'LAST_SEND_EMAIL_REMIND_TRAFFIC' => '最后发送流量邮件提醒',
-        'SCHEDULE_LAST_CHECK_AT' => '计划任务最后检查时间',
-        'REGISTER_IP_RATE_LIMIT' => '注册频率限制',
-        'LAST_SEND_LOGIN_WITH_MAIL_LINK_TIMESTAMP' => '最后一次发送登入链接时间',
-        'PASSWORD_ERROR_LIMIT' => '密码错误次数限制',
-        'USER_SESSIONS' => '用户session',
-        'FORGET_REQUEST_LIMIT' => '找回密码次数限制'
+        'EMAIL_VERIFY_CODE' => 'Email verification code',
+        'LAST_SEND_EMAIL_VERIFY_TIMESTAMP' => 'Last time email verification code was sent',
+        'TEMP_TOKEN' => 'Temporary token',
+        'LAST_SEND_EMAIL_REMIND_TRAFFIC' => 'Last time flow email reminder was sent',
+        'SCHEDULE_LAST_CHECK_AT' => 'Last check time of scheduled task',
+        'REGISTER_IP_RATE_LIMIT' => 'Registration frequency limit',
+        'LAST_SEND_LOGIN_WITH_MAIL_LINK_TIMESTAMP' => 'Last time login link was sent',
+        'PASSWORD_ERROR_LIMIT' => 'Password error count limit',
+        'USER_SESSIONS' => 'User session',
+        'FORGET_REQUEST_LIMIT' => 'Password recovery attempt limit'
     ];
 
-    // 允许的缓存键模式（支持通配符）
+// Allowed cache key patterns (supports wildcards)
     const ALLOWED_PATTERNS = [
-        'SERVER_*_ONLINE_USER',        // 节点在线用户
-        'MULTI_SERVER_*_ONLINE_USER',  // 多服务器在线用户
-        'SERVER_*_LAST_CHECK_AT',      // 节点最后检查时间
-        'SERVER_*_LAST_PUSH_AT',       // 节点最后推送时间
-        'SERVER_*_LOAD_STATUS',        // 节点负载状态
-        'SERVER_*_LAST_LOAD_AT',       // 节点最后负载提交时间
-        'SERVER_*_METRICS',            // 节点指标数据
-        'USER_ONLINE_CONN_*_*',        // 用户在线连接数 (特定节点类型_ID)
+        'SERVER_*_ONLINE_USER',        // Online users on a node
+        'MULTI_SERVER_*_ONLINE_USER',  // Online users across multiple servers
+        'SERVER_*_LAST_CHECK_AT',      // Last check time of the node
+        'SERVER_*_LAST_PUSH_AT',       // Last push time of the node
+        'SERVER_*_LOAD_STATUS',        // Node load status
+        'SERVER_*_LAST_LOAD_AT',       // Last submission time of node load data
+        'SERVER_*_METRICS',            // Node metric data
+        'USER_ONLINE_CONN_*_*',        // Number of user connections online (Specific node type_ID)
     ];
 
     /**
-     * 生成缓存键
+     * Generate cache key
      */
     public static function get(string $key, mixed $uniqueValue = null): string
     {
-        // 检查是否为核心键
+// Check if it is a core key
         if (array_key_exists($key, self::CORE_KEYS)) {
             return $uniqueValue ? $key . '_' . $uniqueValue : $key;
         }
 
-        // 检查是否匹配允许的模式
+// Check if it matches the allowed pattern
         if (self::matchesPattern($key)) {
             return $uniqueValue ? $key . '_' . $uniqueValue : $key;
         }
 
-        // 开发环境下记录警告，生产环境允许通过
+// Log warnings in development environment, allow through in production environment
         if (app()->environment('local', 'development')) {
             logger()->warning("Unknown cache key used: {$key}");
         }
@@ -54,7 +54,7 @@ class CacheKey
     }
 
     /**
-     * 检查键名是否匹配允许的模式
+     * Check if the key name matches the allowed pattern
      */
     private static function matchesPattern(string $key): bool
     {

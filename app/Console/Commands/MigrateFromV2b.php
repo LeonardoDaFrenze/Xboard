@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class MigrateFromV2b extends Command
 {
     protected $signature = 'migrateFromV2b {version?}';
-    protected $description = '供不同版本V2b迁移到本项目的脚本';
+    protected $description = 'Script for migrating different versions of V2b to this project';
 
     public function handle()
     {
@@ -53,9 +53,9 @@ class MigrateFromV2b extends Command
             ],
             '1.7.3' => [
                 'ALTER TABLE `v2_stat_order` RENAME TO `v2_stat`;',
-                "ALTER TABLE `v2_stat` CHANGE COLUMN order_amount paid_total INT COMMENT '订单合计';",
-                "ALTER TABLE `v2_stat` CHANGE COLUMN order_count paid_count INT COMMENT '邀请佣金';",
-                "ALTER TABLE `v2_stat` CHANGE COLUMN commission_amount commission_total INT COMMENT '佣金合计';",
+                "ALTER TABLE `v2_stat` CHANGE COLUMN order_amount paid_total INT COMMENT 'Order Total';",
+                "ALTER TABLE `v2_stat` CHANGE COLUMN order_count paid_count INT COMMENT 'Invitation Commission';",
+                "ALTER TABLE `v2_stat` CHANGE COLUMN commission_amount commission_total INT COMMENT 'Commission Total';",
                 "ALTER TABLE `v2_stat`
                     ADD COLUMN order_count INT NULL,
                     ADD COLUMN order_total INT NULL,
@@ -127,7 +127,7 @@ class MigrateFromV2b extends Command
         ];
 
         if (!$version) {
-            $version = $this->choice('请选择你迁移前的V2board版本:', array_keys($sqlCommands));
+            $version = $this->choice('Please select the V2board version you are migrating from:', array_keys($sqlCommands));
         }
 
         if (array_key_exists($version, $sqlCommands)) {
@@ -138,24 +138,24 @@ class MigrateFromV2b extends Command
                     DB::statement($sqlCommand);
                 }
                 
-                $this->info('1️⃣、数据库差异矫正成功');
+                $this->info('1️⃣, Database difference correction successful');
 
-                // 初始化数据库迁移
+// Initialize database migration
                 $this->call('db:seed', ['--class' => 'OriginV2bMigrationsTableSeeder']);
-                $this->info('2️⃣、数据库迁移记录初始化成功');
+                $this->info('2️⃣, Database migration record initialization successful');
 
                 $this->call('xboard:update');
-                $this->info('3️⃣、更新成功');
+                $this->info('3️⃣, Update successful');
 
-                $this->info("🎉：成功从 $version 迁移到Xboard");
+                $this->info("🎉: Successfully migrated from $version to Xboard");
             } catch (\Exception $e) {
                 // An error occurred, rollback the transaction
-                $this->error('迁移失败'. $e->getMessage() );
+                $this->error('Migration failed'. $e->getMessage() );
             }
 
 
         } else {
-            $this->error("你所输入的版本未找到");
+            $this->error("The version you entered was not found");
         }
     }
 
@@ -165,22 +165,22 @@ class MigrateFromV2b extends Command
         $configValue = config('v2board') ?? [];
 
         foreach ($configValue as $k => $v) {
-            // 检查记录是否已存在
+// Check if the record already exists
             $existingSetting = Setting::where('name', $k)->first();
             
-            // 如果记录不存在，则插入
+// If the record does not exist, insert it
             if ($existingSetting) {
-                $this->warn("配置 {$k} 在数据库已经存在， 忽略");
+                $this->warn("Configuration {$k} already exists in the database, ignoring");
                 continue;
             }
             Setting::create([
                 'name' => $k,
                 'value' => is_array($v)? json_encode($v) : $v,
             ]);
-            $this->info("配置 {$k} 迁移成功");
+            $this->info("Configuration {$k} migration successful");
         }
         Artisan::call('config:cache');
 
-        $this->info('所有配置迁移完成');
+        $this->info('All configurations have been migrated');
     }
 }

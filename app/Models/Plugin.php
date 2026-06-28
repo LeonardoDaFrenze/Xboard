@@ -28,7 +28,7 @@ class Plugin extends Model
     const TYPE_FEATURE = 'feature';
     const TYPE_PAYMENT = 'payment';
 
-    // 默认不可删除的插件列表
+// Default list of plugins that cannot be deleted
     const PROTECTED_PLUGINS = [
         'epay',           // EPay
         'alipay_f2f',     // Alipay F2F

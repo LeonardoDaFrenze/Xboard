@@ -179,7 +179,7 @@ class Shadowrocket extends AbstractProtocol
             'remark' => $server['name'],
         ];
 
-        // 判断是否开启xtls
+// Determine if xtls is enabled
         if (data_get($protocol_settings, 'flow')) {
             $xtlsMap = [
                 'none' => 0,
@@ -349,7 +349,7 @@ class Shadowrocket extends AbstractProtocol
     public static function buildHysteria($password, $server)
     {
         $protocol_settings = $server['protocol_settings'];
-        $uri = ''; // 初始化变量
+        $uri = ''; // Initialize variables
 
         switch (data_get($protocol_settings, 'version')) {
             case 1:

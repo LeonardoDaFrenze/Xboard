@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Gate;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * 策略映射
+     * Strategy Mapping
      * @var array<class-string, class-string>
      */
     protected $policies = [
@@ -16,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
     ];
 
     /**
-     * 注册任何认证/授权服务
+     * Register Any Authentication/Authorize Services
      * @return void
      */
     public function boot()

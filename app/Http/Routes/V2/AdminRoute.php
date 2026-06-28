@@ -79,7 +79,7 @@ class AdminRoute
                 $router->post('/save', [RouteController::class, 'save']);
                 $router->post('/drop', [RouteController::class, 'drop']);
             });
-            // 节点管理接口
+// Node management interface
             $router->group([
                 'prefix' => 'server/manage'
             ], function ($router) {
@@ -96,7 +96,7 @@ class AdminRoute
                 $router->get('/generateEchKey', [ManageController::class, 'generateEchKey']);
             });
 
-            // 机器管理接口
+// Machine management interface
             $router->group([
                 'prefix' => 'server/machine'
             ], function ($router) {
@@ -284,7 +284,7 @@ class AdminRoute
                 $router->post('upgrade', [\App\Http\Controllers\V2\Admin\PluginController::class, 'upgrade']);
             });
 
-            // 流量重置管理
+// Traffic reset management
             $router->group([
                 'prefix' => 'traffic-reset'
             ], function ($router) {
