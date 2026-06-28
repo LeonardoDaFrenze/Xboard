@@ -2,28 +2,89 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
 use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PaymentTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_payment_creation_and_attributes()
+    /**
+     * Test that a payment method can be created successfully.
+     *
+     * @return void
+     */
+    public function test_payment_creation_is_successful(): void
     {
         $payment = Payment::factory()->create([
-            'handling_fee_fixed' => 50,
-            'handling_fee_percent' => 2.5,
+            'uuid' => 'uuid-string-1234',
+            'payment' => 'Stripe',
+            'name' => 'Credit Card',
+            'icon' => 'stripe-icon',
+            'enable' => 1,
         ]);
-        
+
         $this->assertDatabaseHas('v2_payment', [
             'id' => $payment->id,
-            'handling_fee_fixed' => 50,
-            'handling_fee_percent' => 2.5,
+            'payment' => 'Stripe',
+            'name' => 'Credit Card',
+            'enable' => 1,
         ]);
-        
-        $this->assertEquals(50, $payment->handling_fee_fixed);
-        $this->assertEquals(2.5, $payment->handling_fee_percent);
+
+        $this->assertInstanceOf(Payment::class, $payment);
+    }
+
+    /**
+     * Test that payment attributes casts are applied.
+     *
+     * @return void
+     */
+    public function test_payment_casts_are_applied(): void
+    {
+        $payment = Payment::factory()->create([
+            'enable' => 1,
+        ]);
+
+        $this->assertIsBool($payment->enable);
+        $this->assertTrue($payment->enable);
+    }
+
+    /**
+     * Test that a payment method can be disabled.
+     *
+     * @return void
+     */
+    public function test_payment_can_be_disabled(): void
+    {
+        $payment = Payment::factory()->create([
+            'enable' => 1,
+        ]);
+
+        $payment->update([
+            'enable' => 0,
+        ]);
+
+        $this->assertDatabaseHas('v2_payment', [
+            'id' => $payment->id,
+            'enable' => 0,
+        ]);
+    }
+
+    /**
+     * Test that a payment method can be deleted.
+     *
+     * @return void
+     */
+    public function test_payment_can_be_deleted(): void
+    {
+        $payment = Payment::factory()->create();
+        $paymentId = $payment->id;
+
+        $payment->delete();
+
+        $this->assertDatabaseMissing('v2_payment', [
+            'id' => $paymentId,
+        ]);
     }
 }

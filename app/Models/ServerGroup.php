@@ -22,6 +22,7 @@ class ServerGroup extends Model
 
     protected $table = 'v2_server_group';
     protected $dateFormat = 'U';
+    protected $fillable = ['name'];
     protected $casts = [
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp'

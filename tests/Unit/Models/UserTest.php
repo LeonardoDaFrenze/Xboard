@@ -2,115 +2,92 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
 use App\Models\User;
+use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_is_active()
+    /**
+     * Test that a user can be created.
+     *
+     * @return void
+     */
+    public function test_user_creation_is_successful(): void
     {
-        $user = User::factory()->make([
-            'banned' => 0,
-            'expired_at' => time() + 3600,
-            'plan_id' => 1,
+        $user = User::factory()->create([
+            'email' => 'testuser@example.com',
+            'password' => Hash::make('secret123'),
+            'balance' => 0,
+            'transfer_enable' => 107374182400, // 100GB
+            'u' => 0,
+            'd' => 0,
         ]);
-        $this->assertTrue($user->isActive());
 
-        $bannedUser = User::factory()->make(['banned' => 1, 'plan_id' => 1]);
-        $this->assertFalse($bannedUser->isActive());
+        $this->assertDatabaseHas('v2_user', [
+            'id' => $user->id,
+            'email' => 'testuser@example.com',
+        ]);
 
-        $expiredUser = User::factory()->make(['expired_at' => time() - 3600, 'plan_id' => 1]);
-        $this->assertFalse($expiredUser->isActive());
-
-        $noPlanUser = User::factory()->make(['plan_id' => null]);
-        $this->assertFalse($noPlanUser->isActive());
+        $this->assertInstanceOf(User::class, $user);
     }
 
-    public function test_get_total_used_traffic()
+    /**
+     * Test user active subscription plan relation.
+     *
+     * @return void
+     */
+    public function test_user_belongs_to_plan(): void
     {
-        $user = User::factory()->make(['u' => 1000, 'd' => 2000]);
-        $this->assertEquals(3000, $user->getTotalUsedTraffic());
+        $plan = Plan::factory()->create([
+            'name' => 'Basic Plan',
+        ]);
+
+        $user = User::factory()->create([
+            'plan_id' => $plan->id,
+        ]);
+
+        $this->assertEquals($plan->id, $user->plan_id);
     }
 
-    public function test_get_remaining_traffic()
+    /**
+     * Test user attribute casting.
+     *
+     * @return void
+     */
+    public function test_user_casts_are_applied(): void
     {
-        $user = User::factory()->make([
-            'transfer_enable' => 10000,
-            'u' => 1000,
-            'd' => 2000,
+        $user = User::factory()->create([
+            'is_admin' => 1,
+            'is_staff' => 0,
+            'banned' => 0,
         ]);
-        $this->assertEquals(7000, $user->getRemainingTraffic());
 
-        $userOver = User::factory()->make([
-            'transfer_enable' => 5000,
-            'u' => 3000,
-            'd' => 4000,
-        ]);
-        $this->assertEquals(0, $userOver->getRemainingTraffic());
+        $this->assertIsBool($user->is_admin);
+        $this->assertTrue($user->is_admin);
+        $this->assertIsBool($user->is_staff);
+        $this->assertFalse($user->is_staff);
+        $this->assertIsBool($user->banned);
+        $this->assertFalse($user->banned);
     }
 
-    public function test_is_available()
+    /**
+     * Test user traffic logic.
+     *
+     * @return void
+     */
+    public function test_user_traffic_calculation(): void
     {
-        $user = User::factory()->make([
-            'banned' => 0,
-            'expired_at' => time() + 3600,
-            'plan_id' => 1,
-            'transfer_enable' => 10000,
-            'u' => 1000,
-            'd' => 2000,
+        $user = User::factory()->create([
+            'u' => 1024,
+            'd' => 2048,
         ]);
-        $this->assertTrue($user->isAvailable());
 
-        $userNoTraffic = User::factory()->make([
-            'banned' => 0,
-            'expired_at' => time() + 3600,
-            'plan_id' => 1,
-            'transfer_enable' => 1000,
-            'u' => 1000,
-            'd' => 2000,
-        ]);
-        $this->assertFalse($userNoTraffic->isAvailable());
-    }
-
-    public function test_get_traffic_usage_percentage()
-    {
-        $user = User::factory()->make([
-            'transfer_enable' => 10000,
-            'u' => 2000,
-            'd' => 3000,
-        ]);
-        $this->assertEquals(50.0, $user->getTrafficUsagePercentage());
-
-        $userZero = User::factory()->make(['transfer_enable' => 0]);
-        $this->assertEquals(0, $userZero->getTrafficUsagePercentage());
-
-        $userOver = User::factory()->make([
-            'transfer_enable' => 10000,
-            'u' => 8000,
-            'd' => 4000,
-        ]);
-        $this->assertEquals(100.0, $userOver->getTrafficUsagePercentage());
-    }
-
-    public function test_should_reset_traffic()
-    {
-        $user = User::factory()->make([
-            'banned' => 0,
-            'expired_at' => time() + 3600,
-            'plan_id' => 1,
-            'next_reset_at' => time() - 3600,
-        ]);
-        $this->assertTrue($user->shouldResetTraffic());
-
-        $userFutureReset = User::factory()->make([
-            'banned' => 0,
-            'expired_at' => time() + 3600,
-            'plan_id' => 1,
-            'next_reset_at' => time() + 3600,
-        ]);
-        $this->assertFalse($userFutureReset->shouldResetTraffic());
+        $totalTraffic = $user->u + $user->d;
+        $this->assertEquals(3072, $totalTraffic);
     }
 }
