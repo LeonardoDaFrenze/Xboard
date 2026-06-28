@@ -15,6 +15,10 @@ trait CreatesApplication
     {
         $app = require __DIR__ . '/../bootstrap/app.php';
 
+        if (!file_exists(base_path('.env'))) {
+            @touch(base_path('.env'));
+        }
+
         $app->make(Kernel::class)->bootstrap();
 
         \Illuminate\Support\Facades\Redis::spy();

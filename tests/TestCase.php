@@ -26,7 +26,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getAdminUri(string $path = ''): string
     {
-        $securePath = admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key'))));
+        $securePath = admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key') ?? '')));
         return '/api/v2/' . $securePath . '/' . ltrim($path, '/');
     }
 

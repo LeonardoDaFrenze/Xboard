@@ -64,7 +64,7 @@ class XboardInstall extends Command
                 (File::exists(base_path() . '/.env') && $this->getEnvValue('INSTALLED'))
                 || (getenv('INSTALLED', false) && $isDocker)
             ) {
-                $securePath = admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key'))));
+                $securePath = admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key') ?? '')));
                 $this->info("Visit http(s)://your-site/{$securePath} to access the admin panel. You can change your password in the user center.");
                 $this->warn("To reinstall, clear the contents of the .env file (Docker users: do not delete the file).");
                 $this->warn("Quick clear command:");
@@ -179,7 +179,7 @@ class XboardInstall extends Command
             $this->info("Admin email: {$email}");
             $this->info("Admin password: {$password}");
 
-            $defaultSecurePath = hash('crc32b', config('app.key'));
+            $defaultSecurePath = hash('crc32b', config('app.key') ?? '');
             $this->info("Visit http(s)://your-site/{$defaultSecurePath} to access the admin panel. You can change your password in the user center.");
             $envConfig['INSTALLED'] = true;
             $this->saveToEnv($envConfig);
