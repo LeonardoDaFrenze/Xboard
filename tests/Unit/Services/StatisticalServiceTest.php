@@ -15,8 +15,8 @@ class StatisticalServiceTest extends TestCase
     {
         $service = new StatisticalService();
         
-        $this->assertTrue(method_exists($service, 'generateStatUser'));
-        $this->assertTrue(method_exists($service, 'generateStatServer'));
+        $this->assertTrue(method_exists($service, 'statUser'));
+        $this->assertTrue(method_exists($service, 'statServer'));
         $this->assertTrue(method_exists($service, 'getStatUser'));
         $this->assertTrue(method_exists($service, 'getStatServer'));
     }

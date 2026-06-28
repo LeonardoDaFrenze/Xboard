@@ -23,7 +23,7 @@ class CommissionApiTest extends TestCase
             'get_amount' => 200,
         ]);
 
-        $response = $this->actingAs($inviter)->getJson('/api/v1/user/commission/fetch');
+        $response = $this->actingAs($inviter)->getJson('/api/v1/user/invite/details');
 
         $response->assertStatus(200)
                  ->assertJsonFragment(['get_amount' => 200]);

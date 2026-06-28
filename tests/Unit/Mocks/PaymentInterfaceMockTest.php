@@ -7,8 +7,12 @@ use App\Models\Order;
 use App\Contracts\PaymentInterface;
 use Mockery\MockInterface;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
 class PaymentInterfaceMockTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_payment_interface_mock()
     {
         $mock = $this->mock(PaymentInterface::class, function (MockInterface $mock) {

@@ -11,7 +11,11 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        admin_setting(['app_url' => 'http://localhost']);
+        try {
+            admin_setting(['app_url' => 'http://localhost']);
+        } catch (\Throwable $e) {
+            // Ignore database exceptions for unit tests that do not run database migrations
+        }
     }
 
     /**

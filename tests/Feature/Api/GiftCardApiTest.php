@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\GiftCardTemplate;
 use App\Models\GiftCardCode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,15 +17,26 @@ class GiftCardApiTest extends TestCase
         $user = User::factory()->create([
             'balance' => 0,
         ]);
+
+        $template = GiftCardTemplate::create([
+            'name' => '50 Balance Card',
+            'type' => GiftCardTemplate::TYPE_GENERAL,
+            'status' => 1,
+            'rewards' => [
+                'balance' => 5000,
+            ],
+            'admin_id' => 1,
+        ]);
         
-        $giftCard = GiftCardCode::factory()->create([
-            'code' => 'GIFTCARD-5000',
-            'balance' => 5000,
-            'status' => 0,
+        $giftCard = GiftCardCode::create([
+            'template_id' => $template->id,
+            'code' => 'GIFTCARD5000', // Must be alphanumeric capitalized, min length 8
+            'status' => GiftCardCode::STATUS_UNUSED,
+            'max_usage' => 1,
         ]);
 
         $response = $this->actingAs($user)->postJson('/api/v1/user/gift-card/redeem', [
-            'code' => 'GIFTCARD-5000'
+            'code' => 'GIFTCARD5000'
         ]);
 
         $response->assertStatus(200);
@@ -36,7 +48,7 @@ class GiftCardApiTest extends TestCase
 
         $this->assertDatabaseHas('v2_gift_card_code', [
             'id' => $giftCard->id,
-            'status' => 1,
+            'status' => GiftCardCode::STATUS_USED,
         ]);
     }
 
@@ -46,16 +58,29 @@ class GiftCardApiTest extends TestCase
             'balance' => 0,
         ]);
         
-        $giftCard = GiftCardCode::factory()->used()->create([
-            'code' => 'GIFTCARD-USED',
-            'balance' => 5000,
+        $template = GiftCardTemplate::create([
+            'name' => '50 Balance Card',
+            'type' => GiftCardTemplate::TYPE_GENERAL,
+            'status' => 1,
+            'rewards' => [
+                'balance' => 5000,
+            ],
+            'admin_id' => 1,
+        ]);
+
+        $giftCard = GiftCardCode::create([
+            'template_id' => $template->id,
+            'code' => 'GIFTCARDUSED', // Must be alphanumeric capitalized, min length 8
+            'status' => GiftCardCode::STATUS_USED,
+            'max_usage' => 1,
+            'usage_count' => 1,
         ]);
 
         $response = $this->actingAs($user)->postJson('/api/v1/user/gift-card/redeem', [
-            'code' => 'GIFTCARD-USED'
+            'code' => 'GIFTCARDUSED'
         ]);
 
-        $response->assertStatus(500); // Or the expected exception status code
+        $response->assertStatus(400);
         
         $this->assertDatabaseHas('v2_user', [
             'id' => $user->id,

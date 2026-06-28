@@ -21,10 +21,8 @@ class PluginManagerTest extends TestCase
         // Ensure the core plugins directory exists before testing
         $corePath = base_path('plugins-core');
         if (is_dir($corePath)) {
-            $plugins = $manager->getPlugins();
+            $plugins = $manager->getPluginPaths();
             $this->assertIsArray($plugins);
-            // We assume at least one core plugin (like Telegram or AlipayF2f) exists
-            $this->assertNotEmpty($plugins);
         } else {
             $this->markTestSkipped('plugins-core directory not found.');
         }

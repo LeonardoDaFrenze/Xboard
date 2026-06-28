@@ -24,6 +24,7 @@ class PlanFactory extends Factory
                 Plan::PERIOD_QUARTERLY => 2800,
                 Plan::PERIOD_YEARLY => 10000,
             ],
+            'capacity_limit' => null,
             'tags' => ['Pro', 'Fast'],
             'created_at' => time(),
             'updated_at' => time(),

@@ -22,11 +22,13 @@ class UserFeatureTest extends TestCase
             'u' => 5000,
             'd' => 10000,
             'transfer_enable' => 100000,
-            'next_reset_at' => time() - 100,
             'banned' => 0,
             'expired_at' => time() + 86400,
             'reset_count' => 0,
         ]);
+
+        $user->next_reset_at = time() - 100;
+        $user->save();
 
         $this->assertTrue($user->shouldResetTraffic());
 

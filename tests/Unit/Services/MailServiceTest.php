@@ -11,7 +11,8 @@ class MailServiceTest extends TestCase
     {
         $service = new MailService();
 
-        $this->assertTrue(method_exists($service, 'send'));
-        $this->assertTrue(method_exists($service, 'sendEmailVerify'));
+        $this->assertTrue(method_exists($service, 'getTotalUsersNeedRemind'));
+        $this->assertTrue(method_exists($service, 'processUsersInChunks'));
+        $this->assertTrue(method_exists($service, 'remindTraffic'));
     }
 }

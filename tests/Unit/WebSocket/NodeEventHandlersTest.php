@@ -9,9 +9,8 @@ class NodeEventHandlersTest extends TestCase
 {
     public function test_node_event_handlers_has_required_methods()
     {
-        $this->assertTrue(method_exists(NodeEventHandlers::class, 'onWorkerStart'));
-        $this->assertTrue(method_exists(NodeEventHandlers::class, 'onConnect'));
-        $this->assertTrue(method_exists(NodeEventHandlers::class, 'onMessage'));
-        $this->assertTrue(method_exists(NodeEventHandlers::class, 'onClose'));
+        $this->assertTrue(method_exists(NodeEventHandlers::class, 'handlePong'));
+        $this->assertTrue(method_exists(NodeEventHandlers::class, 'handleNodeStatus'));
+        $this->assertTrue(method_exists(NodeEventHandlers::class, 'handleDeviceReport'));
     }
 }

@@ -18,7 +18,7 @@ class CouponFactory extends Factory
             'type' => 1, // 1: Amount discount, 2: Percentage discount
             'value' => 1000,
             'show' => 1,
-            'limit_use' => -1, // Unlimited
+            'limit_use' => null, // Unlimited
             'limit_use_with_user' => 1,
             'limit_plan_ids' => null,
             'limit_period' => null,

@@ -25,7 +25,7 @@ class KnowledgeApiTest extends TestCase
             'show' => 0
         ]);
 
-        $response = $this->actingAs($user)->getJson('/api/v1/user/knowledge/fetch');
+        $response = $this->actingAs($user)->getJson('/api/v1/user/knowledge/fetch?language=en-US');
 
         $response->assertStatus(200)
                  ->assertJsonFragment(['title' => 'How to setup Windows client'])
