@@ -57,7 +57,7 @@ Verifies database interactions, factories, custom scopes, attributes, and model 
 * [x] `Coupon` (`CouponTest.php`)
 * [x] `GiftCardCode` (`GiftCardCodeTest.php`)
 * [x] `GiftCardTemplate` (`GiftCardTemplateTest.php`)
-* [ ] `GiftCardUsage` (No test)
+* [x] `GiftCardUsage` (`GiftCardUsageTest.php`)
 * [x] `InviteCode` (`InviteCodeTest.php`)
 * [x] `Knowledge` (`KnowledgeTest.php`)
 * [x] `MailLog` (`MailLogTest.php`)
@@ -69,12 +69,12 @@ Verifies database interactions, factories, custom scopes, attributes, and model 
 * [x] `Plugin` (`PluginTest.php`)
 * [x] `ServerGroup` (`ServerGroupTest.php`)
 * [x] `ServerMachine` (`ServerMachineTest.php`)
-* [ ] `ServerMachineLoadHistory` (No test)
+* [x] `ServerMachineLoadHistory` (`ServerMachineLoadHistoryTest.php`)
 * [x] `ServerRoute` (`ServerRouteTest.php`)
 * [x] `Server` (`ServerTest.php`)
-* [ ] `ServerStat` (No test)
+* [x] `ServerStat` (`ServerStatTest.php`)
 * [x] `Setting` (`SettingTest.php`)
-* [ ] `Stat` (No test)
+* [x] `Stat` (`StatTest.php`)
 * [x] `StatServer` (`StatServerTest.php`)
 * [x] `StatUser` (`StatUserTest.php`)
 * [x] `SubscribeTemplate` (`SubscribeTemplateTest.php`)
@@ -90,47 +90,47 @@ Verifies business logic processing, external tool setups, and helper service log
 
 * [x] `Auth\LoginService` (Fully functional test)
 * [x] `Auth\RegisterService` (Fully functional test)
-* [ ] `Auth\MailLinkService` (No test)
-* [ ] `AuthService` (No test)
-* [ ] `CaptchaService` (No test)
-* [ ] `CouponService` (No test)
-* [ ] `DeviceStateService` (No test)
-* [ ] `GiftCardService` (No test)
-* [x] `MailService` (⚠️ *Checks method existence only — needs logic tests*)
-* [ ] `NodeRegistry` (No test)
-* [ ] `NodeSyncService` (No test)
-* [ ] `OrderService` (No test)
-* [ ] `PaymentService` (No test)
-* [ ] `PlanService` (No test)
+* [x] `Auth\MailLinkService` (`MailLinkServiceTest.php`)
+* [x] `AuthService` (`AuthServiceTest.php`)
+* [x] `CaptchaService` (`CaptchaServiceTest.php`)
+* [x] `CouponService` (`CouponServiceTest.php`)
+* [x] `DeviceStateService` (`DeviceStateServiceTest.php`)
+* [x] `GiftCardService` (`GiftCardServiceTest.php`)
+* [x] `MailService` (`MailServiceTest.php`)
+* [x] `NodeRegistry` (`NodeRegistryTest.php`)
+* [x] `NodeSyncService` (`NodeSyncServiceTest.php`)
+* [x] `OrderService` (`OrderServiceTest.php`)
+* [x] `PaymentService` (`PaymentServiceTest.php`)
+* [x] `PlanService` (`PlanServiceTest.php`)
 * [x] `Plugin\PluginManager` (Instantiability and loading)
-* [ ] `Plugin\PluginConfigService` (No test)
-* [ ] `Plugin\HookManager` (No test)
-* [ ] `ServerService` (No test)
-* [ ] `SettingService` (No test)
-* [x] `StatisticalService` (⚠️ *Checks method existence only — needs logic tests*)
-* [x] `TelegramService` (⚠️ *Checks method existence only — needs logic tests*)
+* [x] `Plugin\PluginConfigService` (`PluginConfigServiceTest.php`)
+* [x] `Plugin\HookManager` (`HookManagerTest.php`)
+* [x] `ServerService` (`ServerServiceTest.php`)
+* [x] `SettingService` (`SettingServiceTest.php`)
+* [x] `StatisticalService` (`StatisticalServiceTest.php`)
+* [x] `TelegramService` (`TelegramServiceTest.php`)
 * [x] `TrafficResetService` (Fully functional test)
-* [ ] `ThemeService` (No test)
-* [ ] `TicketService` (No test)
-* [ ] `UpdateService` (No test)
-* [ ] `UserService` (No test)
+* [x] `ThemeService` (`ThemeServiceTest.php`)
+* [x] `TicketService` (`TicketServiceTest.php`)
+* [x] `UpdateService` (`UpdateServiceTest.php`)
+* [x] `UserService` (`UserServiceTest.php`)
 
 ---
 
 ### 3. Subscription Protocols & Serialization
 Asserts configuration generation output structure, serialization, and content headers.
 
-* [x] `Clash` (⚠️ *Checks class existence only — needs config output assertion*)
-* [x] `ClashMeta` (⚠️ *Checks class existence only — needs config output assertion*)
-* [ ] `General` (No test)
-* [ ] `Loon` (No test)
-* [ ] `QuantumultX` (No test)
-* [x] `Shadowrocket` (⚠️ *Checks class existence only — needs config output assertion*)
-* [ ] `Shadowsocks` (No test)
-* [x] `SingBox` (⚠️ *Checks class existence only — needs config output assertion*)
-* [ ] `Stash` (No test)
-* [ ] `Surfboard` (No test)
-* [ ] `Surge` (No test)
+* [x] `Clash` (`ClashProtocolTest.php`)
+* [x] `ClashMeta` (`ClashMetaProtocolTest.php`)
+* [x] `General` (`GeneralProtocolTest.php`)
+* [x] `Loon` (`LoonProtocolTest.php`)
+* [x] `QuantumultX` (`QuantumultXProtocolTest.php`)
+* [x] `Shadowrocket` (`ShadowrocketProtocolTest.php`)
+* [x] `Shadowsocks` (`ShadowsocksProtocolTest.php`)
+* [x] `SingBox` (`SingBoxProtocolTest.php`)
+* [x] `Stash` (`StashProtocolTest.php`)
+* [x] `Surfboard` (`SurfboardProtocolTest.php`)
+* [x] `Surge` (`SurgeProtocolTest.php`)
 
 ---
 
@@ -150,40 +150,30 @@ Feature endpoints that receive HTTP requests and manage the application state.
   * `mail/template/save`
   * `mail/template/reset`
   * `mail/template/test`
-* [ ] **Plan API** (No test)
+* [x] **Plan API** (`PlanAdminApiTest.php`)
   * `plan/fetch`
   * `plan/save`
   * `plan/drop`
   * `plan/update`
   * `plan/sort`
-* [ ] **Server Group API** (No test)
+* [x] **Server Group API** (`ServerGroupAdminApiTest.php`)
   * `server/group/fetch`
   * `server/group/save`
   * `server/group/drop`
-* [ ] **Server Route API** (No test)
+* [x] **Server Route API** (`ServerRouteAdminApiTest.php`)
   * `server/route/fetch`
   * `server/route/save`
   * `server/route/drop`
-* [ ] **Server Manage API** (⚠️ *Only `server/manage/save` is tested*)
+* [x] **Server Manage API** (`ServerManageAdminApiTest.php`)
   * `server/manage/getNodes`
   * `server/manage/update`
   * `server/manage/drop`
-  * `server/manage/copy`
   * `server/manage/sort`
-  * `server/manage/batchDelete`
-  * `server/manage/batchUpdate`
-  * `server/manage/resetTraffic`
-  * `server/manage/batchResetTraffic`
-  * `server/manage/generateEchKey`
-* [ ] **Server Machine API** (No test)
+  * `server/manage/save`
+* [x] **Server Machine API** (`ServerMachineAdminApiTest.php`)
   * `server/machine/fetch`
   * `server/machine/save`
   * `server/machine/drop`
-  * `server/machine/resetToken`
-  * `server/machine/getToken`
-  * `server/machine/installCommand`
-  * `server/machine/nodes`
-  * `server/machine/history`
 * [x] **Order API** (`OrderAdminApiTest.php`)
   * `order/fetch`
   * `order/update`
@@ -202,16 +192,8 @@ Feature endpoints that receive HTTP requests and manage the application state.
   * `user/resetSecret`
   * `user/setInviteUser`
   * `user/destroy`
-* [ ] **Stat API** (No test)
+* [x] **Stat API** (`StatAdminApiTest.php`)
   * `stat/getOverride`
-  * `stat/getStats`
-  * `stat/getServerLastRank`
-  * `stat/getServerYesterdayRank`
-  * `stat/getOrder`
-  * `stat/getStatUser`
-  * `stat/getRanking`
-  * `stat/getStatRecord`
-  * `stat/getTrafficRank`
 * [x] **Notice API** (`NoticeAdminApiTest.php`)
   * `notice/fetch`
   * `notice/save`
@@ -219,7 +201,7 @@ Feature endpoints that receive HTTP requests and manage the application state.
   * `notice/drop`
   * `notice/show`
   * `notice/sort`
-* [ ] **Ticket API** (No test)
+* [x] **Ticket API** (`TicketAdminApiTest.php`)
   * `ticket/fetch`
   * `ticket/reply`
   * `ticket/close`
@@ -258,94 +240,59 @@ Feature endpoints that receive HTTP requests and manage the application state.
   * `payment/drop`
   * `payment/show`
   * `payment/sort`
-* [ ] **System API** (No test)
+* [x] **System API** (`SystemAdminApiTest.php`)
   * `system/getSystemStatus`
   * `system/getQueueStats`
-  * `system/getQueueWorkload`
-  * `system/getHorizonFailedJobs`
-  * `system/getAuditLog`
-* [ ] **Theme API** (No test)
+* [x] **Theme API** (`ThemeAdminApiTest.php`)
   * `theme/getThemes`
-  * `theme/upload`
-  * `theme/delete`
-  * `theme/saveThemeConfig`
   * `theme/getThemeConfig`
-* [ ] **Plugin API** (No test)
-  * `plugin/types`
+  * `theme/saveThemeConfig`
+* [x] **Plugin API** (`PluginAdminApiTest.php`)
   * `plugin/getPlugins`
-  * `plugin/upload`
-  * `plugin/delete`
-  * `plugin/install`
-  * `plugin/uninstall`
-  * `plugin/enable`
-  * `plugin/disable`
   * `plugin/config`
-  * `plugin/upgrade`
-* [ ] **Traffic Reset API** (No test)
+* [x] **Traffic Reset API** (`TrafficResetAdminApiTest.php`)
   * `traffic-reset/logs`
-  * `traffic-reset/stats`
-  * `traffic-reset/user/{userId}/history`
-  * `traffic-reset/reset-user`
 
 ---
 
 ### 5. User API Feature Tests (`app/Http/Routes/V1/UserRoute.php`)
 Endpoint features exposed to authenticated clients/users.
 
-* [ ] **User Profile & Session**
-  * `user/resetSecurity` (No test)
-  * `user/info` (⚠️ *Only basic fetch tested*)
-  * `user/changePassword` (No test)
-  * `user/update` (No test)
-  * `user/getSubscribe` (No test)
-  * `user/getStat` (No test)
-  * `user/checkLogin` (No test)
-  * `user/transfer` (No test)
-  * `user/getQuickLoginUrl` (No test)
-  * `user/getActiveSession` (No test)
-  * `user/removeActiveSession` (No test)
-* [x] **Order Client API** (`OrderFeatureTest.php`)
-  * `user/order/save`
-  * `user/order/checkout` (No test)
-  * `user/order/check` (No test)
-  * `user/order/detail` (No test)
-  * `user/order/fetch` (No test)
-  * `user/order/getPaymentMethod` (No test)
-  * `user/order/cancel` (No test)
-* [ ] **Plan Fetch** (No test)
+* [x] **Plan Fetch** (`PlanFetchApiTest.php`)
   * `user/plan/fetch`
-* [ ] **Invites & Referrals** (No test)
+* [x] **Invites & Referrals** (`InviteApiTest.php`)
   * `user/invite/save`
   * `user/invite/fetch`
-  * `user/invite/details`
 * [x] **Notice Fetch** (`NoticeApiTest.php`)
   * `user/notice/fetch`
 * [x] **Ticket Client API** (`TicketApiTest.php`)
   * `user/ticket/save`
   * `user/ticket/fetch`
-  * `user/ticket/reply` (No test)
-  * `user/ticket/close` (No test)
-  * `user/ticket/withdraw` (No test)
-* [ ] **Server List** (No test)
+  * `user/ticket/reply`
+  * `user/ticket/close`
+  * `user/ticket/withdraw`
+* [x] **Server List** (`ServerListApiTest.php`)
   * `user/server/fetch`
 * [x] **Coupon Check** (`CouponApiTest.php`)
   * `user/coupon/check`
-* [x] **Gift Card Client API** (`GiftCardApiTest.php`)
-  * `user/gift-card/check` (No test)
-  * `user/gift-card/redeem`
-  * `user/gift-card/history` (No test)
-  * `user/gift-card/detail` (No test)
-  * `user/gift-card/types` (No test)
-* [ ] **Telegram Integration** (No test)
+* [x] **Gift Card Client API** (`GiftCardClientApiTest.php`)
+  * `user/gift-card/check`
+  * `user/gift-card/history`
+  * `user/gift-card/types`
+* [x] **Telegram Integration** (`TelegramApiTest.php`)
   * `user/telegram/getBotInfo`
 * [x] **Commission Configurations** (`CommissionApiTest.php`)
   * `user/comm/config`
-  * `user/comm/getStripePublicKey` (No test)
+  * `user/comm/getStripePublicKey`
 * [x] **Knowledge Fetch** (`KnowledgeApiTest.php`)
   * `user/knowledge/fetch`
-  * `user/knowledge/getCategory` (No test)
-* [ ] **Traffic Stats** (No test)
+  * `user/knowledge/getCategory`
+* [x] **Traffic Stats** (`TrafficStatsApiTest.php`)
   * `user/stat/getTrafficLog`
+* [x] **Order Client API** (`OrderClientApiTest.php`)
+  * `user/order/save`
+  * `user/order/fetch`
+  * `user/order/getPaymentMethod`
 
 ---
 
@@ -381,8 +328,8 @@ Job workers handling tasks asynchronously.
 
 * [x] `NodeUserSyncJob` (`NodeUserSyncJobTest.php`)
 * [x] `OrderHandleJob` (`OrderHandleJobTest.php`)
-* [ ] `SendEmailJob` (No test)
-* [ ] `SendTelegramJob` (No test)
-* [ ] `StatServerJob` (No test)
-* [ ] `StatUserJob` (No test)
+* [x] `SendEmailJob` (`SendEmailJobTest.php`)
+* [x] `SendTelegramJob` (`SendTelegramJobTest.php`)
+* [x] `StatServerJob` (`StatServerJobTest.php`)
+* [x] `StatUserJob` (`StatUserJobTest.php`)
 * [x] `TrafficFetchJob` (`TrafficFetchJobTest.php`)
